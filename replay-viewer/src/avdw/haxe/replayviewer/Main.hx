@@ -18,8 +18,8 @@ import sys.io.File;
  */
 class Main extends Sprite
 {
-	var matchList:VGroup;
-	var roundList:VGroup;
+	var matchList:ButtonGroup;
+	var roundList:ButtonGroup;
 	var gameMap:Group;
 	var config:Dynamic;
 	var font:Font;
@@ -46,8 +46,8 @@ class Main extends Sprite
 			config = Json.parse(File.getContent('../../../config.json'));
 			
 
-			addChild(matchList = new VGroup());
-			addChild(roundList = new VGroup());
+			addChild(matchList = new ButtonGroup());
+			addChild(roundList = new ButtonGroup());
 			addChild(gameMap = new Group());
 
 			addEventListener(Event.ADDED_TO_STAGE, added);
@@ -129,7 +129,7 @@ class Main extends Sprite
 		try
 		{
 			var map = Json.parse(File.getContent(directory + "/Player 1/JsonMap.json"));
-			trace(map.gameMap);
+			//trace(map.gameMap);
 
 			for (row in cast (map.gameMap, Array<Dynamic>))
 			{

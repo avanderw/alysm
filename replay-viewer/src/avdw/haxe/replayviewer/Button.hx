@@ -1,11 +1,12 @@
 package avdw.haxe.replayviewer;
 
-import flash.display.Sprite;
-import flash.events.MouseEvent;
-import flash.text.TextFormat;
 import openfl.Assets;
+import openfl.display.Sprite;
+import openfl.events.Event;
+import openfl.events.MouseEvent;
 import openfl.text.TextField;
 import openfl.text.TextFieldAutoSize;
+import openfl.text.TextFormat;
 
 /**
  * ...
@@ -14,6 +15,8 @@ import openfl.text.TextFieldAutoSize;
 class Button extends Sprite
 {
 	var _width:Int = 150;
+	var _height:Int;
+	var bg:Sprite;
 	public function new(txt:String, handler:Dynamic->Void)
 	{
 		super();
@@ -28,21 +31,48 @@ class Button extends Sprite
 			tf.autoSize = TextFieldAutoSize.CENTER;
 			tf.y = Math.round(tf.height / 2);
 
-			var bg:Sprite = new Sprite();
-			bg.graphics.lineStyle(1);
-			bg.graphics.beginFill(0xdddddd);
-			bg.graphics.drawRoundRect(0, 0, _width, Math.round(tf.height * 2), 5);
-			bg.graphics.endFill();
+			_height = Math.round(tf.height * 2);
+
+			bg = new Sprite();
+			deselect();
 			addChild(bg);
 			addChild(tf);
 
 			addEventListener(MouseEvent.CLICK, handler);
+			addEventListener(Event.SELECT, handler);
 
 		}
 		catch (e:Dynamic)
 		{
 			trace(e);
 		}
+	}
+
+	public function select()
+	{
+		try
+		{
+			bg.graphics.clear();
+			bg.graphics.lineStyle(1);
+			bg.graphics.beginFill(0xeeeeee);
+			bg.graphics.drawRoundRect(0, 0, _width, _height, 5);
+			bg.graphics.endFill();
+			
+			dispatchEvent(new Event(Event.SELECT));
+		}
+		catch (e:Dynamic)
+		{
+			trace(e);
+		}
+	}
+
+	public function deselect()
+	{
+		bg.graphics.clear();
+		bg.graphics.lineStyle(1);
+		bg.graphics.beginFill(0xdddddd);
+		bg.graphics.drawRoundRect(0, 0, _width, _height, 5);
+		bg.graphics.endFill();
 	}
 
 }
