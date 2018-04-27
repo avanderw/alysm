@@ -13,38 +13,36 @@ import openfl.text.TextFieldAutoSize;
  */
 class Button extends Sprite
 {
-	public function new(txt:String, handler:Dynamic->Void, ?x:Int, ?y:Int)
+	var _width:Int = 150;
+	public function new(txt:String, handler:Dynamic->Void)
 	{
 		super();
 
-		if (y == null && x != null)
+		try
 		{
-			y = x;
+			var tf:TextField = new TextField();
+			tf.setTextFormat(new TextFormat(Assets.getFont("font/OpenSans-Regular.ttf").fontName, 12));
+			tf.selectable = false;
+			tf.text = txt;
+			tf.width = _width;
+			tf.autoSize = TextFieldAutoSize.CENTER;
+			tf.y = Math.round(tf.height / 2);
+
+			var bg:Sprite = new Sprite();
+			bg.graphics.lineStyle(1);
+			bg.graphics.beginFill(0xdddddd);
+			bg.graphics.drawRoundRect(0, 0, _width, Math.round(tf.height * 2), 5);
+			bg.graphics.endFill();
+			addChild(bg);
+			addChild(tf);
+
+			addEventListener(MouseEvent.CLICK, handler);
+
 		}
-		else if (y == null && x == null)
+		catch (e:Dynamic)
 		{
-			x = y = 0;
+			trace(e);
 		}
-		this.x = x;
-		this.y = y;
-		
-		var tf:TextField = new TextField();
-		tf.setTextFormat(new TextFormat(Assets.getFont("font/OpenSans-Regular.ttf").fontName, 12));
-		tf.selectable = false;
-		tf.text = txt;
-		tf.width = 100;
-		tf.autoSize = TextFieldAutoSize.CENTER;
-		tf.y = Math.round(tf.height / 2);
-		
-		var bg:Sprite = new Sprite();
-		bg.graphics.lineStyle(1);
-		bg.graphics.beginFill(0xdddddd);
-		bg.graphics.drawRoundRect(0, 0, 200, Math.round(tf.height * 2), 5);
-		bg.graphics.endFill();
-		addChild(bg);
-		addChild(tf);
-		
-		addEventListener(MouseEvent.CLICK, handler);
 	}
 
 }
