@@ -32,6 +32,7 @@ class Main extends Sprite
 	var warning:BitmapData;
 	var missile:BitmapData;
 	var buildingDetails:BuildingDetails;
+	var playerDetails:PlayerDetails;
 
 	public function new()
 	{
@@ -40,6 +41,7 @@ class Main extends Sprite
 		// openfl.Assets.getBitmapData("img/assetname.jpg");
 		try
 		{
+			new AssetCache();
 			font = Assets.getFont("font/OpenSans-Regular.ttf");
 
 			shield = Assets.getBitmapData("img/64x-building-defense.png");
@@ -69,7 +71,7 @@ class Main extends Sprite
 
 		stage.scaleMode = StageScaleMode.NO_SCALE;
 		stage.align = StageAlign.TOP_LEFT;
-		
+
 		updateMatchList();
 		resize();
 	}
@@ -117,7 +119,7 @@ class Main extends Sprite
 			roundList.removeAll();
 			for (round in rounds)
 			{
-				
+
 				var btn = new Button(round, function(e:Dynamic)
 				{
 					gameMap.removeAll();
@@ -140,14 +142,15 @@ class Main extends Sprite
 			var buildingSize:Int = 64;
 			var spacingSize:Int = 4;
 			var map = Json.parse(File.getContent(directory + "/Player 1/JsonMap.json"));
-			
-				if (buildingDetails == null) {
-					buildingDetails = new BuildingDetails(map.gameDetails);
-					buildingDetails.x = stage.stageWidth - buildingDetails.width;
-					buildingDetails.y = stage.stageHeight - buildingDetails.height;
-					addChild(buildingDetails);
-				}
-				
+
+			if (buildingDetails == null)
+			{
+				buildingDetails = new BuildingDetails(map.gameDetails);
+				buildingDetails.x = stage.stageWidth - buildingDetails.width;
+				buildingDetails.y = stage.stageHeight - buildingDetails.height;
+				addChild(buildingDetails);
+			}
+
 			trace(map);
 			//trace(map.gameMap);
 
@@ -195,13 +198,13 @@ class Main extends Sprite
 						{
 							buildingBmp = new Bitmap(shield);
 						}
-						
-						if (buildings[0].playerType == "B") {
+
+						if (buildings[0].playerType == "B")
+						{
 							buildingBmp.x = buildingBmp.width;
 							buildingBmp.scaleX = -1;
 						}
-						
-						
+
 					}
 					else
 					{
@@ -233,14 +236,19 @@ class Main extends Sprite
 					sprite.y = cell.y * (buildingSize + spacingSize);
 					gameMap.add(sprite);
 				}
-
 			}
+			if (playerDetails == null) {
+				addChild(playerDetails = new PlayerDetails());
+				playerDetails.x = gameMap.x + (gameMap.width - playerDetails.width) / 2;
+				playerDetails.y = gameMap.y + gameMap.height;
+			}
+			
+			playerDetails.update(map.players);
 		}
 		catch (e:Dynamic)
 		{
 			trace(e);
 		}
 	}
-	
 
 }

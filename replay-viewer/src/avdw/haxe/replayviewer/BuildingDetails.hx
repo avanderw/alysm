@@ -44,8 +44,7 @@ class BuildingDetails extends Sprite
 			wdth = 64 + 64 + 64 + 6 * padding;
 			graphics.moveTo(wdth, 0); graphics.lineTo(wdth, hght);
 
-			var font:Font = Assets.getFont("font/perfect-DOS-VGA-437.ttf");
-			var format:TextFormat = new TextFormat(font.fontName, 16);
+			var format:TextFormat = new TextFormat(AssetCache.font.fontName, 16);
 
 			var attackBuilding:BitmapData = Assets.getBitmapData("img/64x-building-attack.png");
 			var defenseBuilding:BitmapData = Assets.getBitmapData("img/64x-building-defense.png");
