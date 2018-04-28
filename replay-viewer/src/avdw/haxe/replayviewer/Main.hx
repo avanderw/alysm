@@ -47,7 +47,7 @@ class Main extends Sprite
 			shield = Assets.getBitmapData("img/64x-building-defense.png");
 			attackBuildingBmd = Assets.getBitmapData("img/64x-building-attack.png");
 			energy = Assets.getBitmapData("img/64x-building-energy.png");
-			fields = Assets.getBitmapData("img/fields.png");
+			fields = AssetCache.buildingEmpty;
 			warning = Assets.getBitmapData("img/warning.png");
 			missile = Assets.getBitmapData("img/missile.png");
 
@@ -178,37 +178,10 @@ class Main extends Sprite
 					colorOverlay.graphics.endFill();
 
 					var buildings:Array<Dynamic> = cell.buildings;
-					var buildingBmp:Bitmap = new Bitmap(warning);
-					if (buildings.length > 0)
+					var buildingBmp:Building = (buildings.length > 0) ? new Building(buildings[0]) : new Building({});
+					if (buildings.length > 1)
 					{
-						if (buildings.length > 1)
-						{
-							throw "more than one building on a cell, handle this";
-						}
-
-						if (buildings[0].buildingType  == "ENERGY")
-						{
-							buildingBmp = new Bitmap(energy);
-						}
-						else if (buildings[0].buildingType  == "ATTACK")
-						{
-							buildingBmp = new Bitmap(attackBuildingBmd);
-						}
-						else if (buildings[0].buildingType  == "DEFENSE")
-						{
-							buildingBmp = new Bitmap(shield);
-						}
-
-						if (buildings[0].playerType == "B")
-						{
-							buildingBmp.x = buildingBmp.width;
-							buildingBmp.scaleX = -1;
-						}
-
-					}
-					else
-					{
-						buildingBmp = new Bitmap(fields);
+						throw "more than one building on a cell, handle this";
 					}
 
 					var missiles:Array<Dynamic> = cell.missiles;
@@ -237,12 +210,13 @@ class Main extends Sprite
 					gameMap.add(sprite);
 				}
 			}
-			if (playerDetails == null) {
+			if (playerDetails == null)
+			{
 				addChild(playerDetails = new PlayerDetails());
 				playerDetails.x = gameMap.x + (gameMap.width - playerDetails.width) / 2;
 				playerDetails.y = gameMap.y + gameMap.height;
 			}
-			
+
 			playerDetails.update(map.players);
 		}
 		catch (e:Dynamic)
