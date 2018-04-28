@@ -1,5 +1,7 @@
 package avdw.haxe.replayviewer;
-import flash.display.Sprite;
+
+import openfl.display.Sprite;
+import openfl.display.DisplayObject;
 
 /**
  * ...
@@ -7,19 +9,19 @@ import flash.display.Sprite;
  */
 class Group extends Sprite
 {
-	var sprites:Array<Sprite> = new Array();
+	var displayObjs:Array<DisplayObject> = new Array();
 
 	public function new()
 	{
 		super();
 	}
 
-	public function add(sprite:Sprite)
+	public function add(displayObj:DisplayObject)
 	{
 		try
 		{
-			sprites.push(sprite);
-			addChild(sprite);
+			displayObjs.push(displayObj);
+			addChild(displayObj);
 		}
 		catch (e:Dynamic)
 		{
@@ -29,14 +31,14 @@ class Group extends Sprite
 
 	public function removeAll()
 	{
-		for (sprite in sprites)
+		for (displayObj in displayObjs)
 		{
-			removeChild(sprite);
+			removeChild(displayObj);
 		}
 
-		while (sprites.length > 0)
+		while (displayObjs.length > 0)
 		{
-			sprites.pop();
+			displayObjs.pop();
 		}
 	}
 

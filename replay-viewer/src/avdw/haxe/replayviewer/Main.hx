@@ -7,6 +7,8 @@ import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 import openfl.display.BlendMode;
 import openfl.display.Sprite;
+import openfl.display.StageAlign;
+import openfl.display.StageScaleMode;
 import openfl.events.Event;
 import openfl.text.Font;
 import sys.FileSystem;
@@ -24,27 +26,30 @@ class Main extends Sprite
 	var config:Dynamic;
 	var font:Font;
 	var shield:BitmapData;
-	var sword:BitmapData;
+	var attackBuildingBmd:BitmapData;
 	var energy:BitmapData;
 	var fields:BitmapData;
 	var warning:BitmapData;
+	var missile:BitmapData;
+	var buildingDetails:BuildingDetails;
 
 	public function new()
 	{
 		super();
-
 		// Assets:
 		// openfl.Assets.getBitmapData("img/assetname.jpg");
 		try
 		{
 			font = Assets.getFont("font/OpenSans-Regular.ttf");
-			shield = Assets.getBitmapData("img/shield.png");
-			sword = Assets.getBitmapData("img/sword.png");
-			energy = Assets.getBitmapData("img/energy.png");
+
+			shield = Assets.getBitmapData("img/64x-building-defense.png");
+			attackBuildingBmd = Assets.getBitmapData("img/64x-building-attack.png");
+			energy = Assets.getBitmapData("img/64x-building-energy.png");
 			fields = Assets.getBitmapData("img/fields.png");
 			warning = Assets.getBitmapData("img/warning.png");
+			missile = Assets.getBitmapData("img/missile.png");
+
 			config = Json.parse(File.getContent('../../../config.json'));
-			
 
 			addChild(matchList = new ButtonGroup());
 			addChild(roundList = new ButtonGroup());
@@ -62,6 +67,9 @@ class Main extends Sprite
 	{
 		removeEventListener(Event.ADDED_TO_STAGE, added);
 
+		stage.scaleMode = StageScaleMode.NO_SCALE;
+		stage.align = StageAlign.TOP_LEFT;
+		
 		updateMatchList();
 		resize();
 	}
@@ -109,6 +117,7 @@ class Main extends Sprite
 			roundList.removeAll();
 			for (round in rounds)
 			{
+				
 				var btn = new Button(round, function(e:Dynamic)
 				{
 					gameMap.removeAll();
@@ -128,7 +137,18 @@ class Main extends Sprite
 	{
 		try
 		{
+			var buildingSize:Int = 64;
+			var spacingSize:Int = 4;
 			var map = Json.parse(File.getContent(directory + "/Player 1/JsonMap.json"));
+			
+				if (buildingDetails == null) {
+					buildingDetails = new BuildingDetails(map.gameDetails);
+					buildingDetails.x = stage.stageWidth - buildingDetails.width;
+					buildingDetails.y = stage.stageHeight - buildingDetails.height;
+					addChild(buildingDetails);
+				}
+				
+			trace(map);
 			//trace(map.gameMap);
 
 			for (row in cast (map.gameMap, Array<Dynamic>))
@@ -136,26 +156,26 @@ class Main extends Sprite
 				for (cell in cast (row, Array<Dynamic>))
 				{
 					trace(cell, cell.cellOwner);
-					var buildings:Array<Dynamic> = cell.buildings;
 
-					var overlay:Sprite = new Sprite();
-					overlay.blendMode = BlendMode.ADD;
+					var colorOverlay:Sprite = new Sprite();
+					colorOverlay.blendMode = BlendMode.ADD;
 					if (cell.cellOwner == "A")
 					{
-						overlay.graphics.beginFill(0xFF0000);
+						colorOverlay.graphics.beginFill(0xFF0000);
 					}
 					else if (cell.cellOwner == "B")
 					{
-						overlay.graphics.beginFill(0x0000FF);
+						colorOverlay.graphics.beginFill(0x0000FF);
 					}
 					else
 					{
-						overlay.graphics.beginFill();
+						colorOverlay.graphics.beginFill();
 					}
-					overlay.graphics.drawRect(0, 0, 32, 32);
-					overlay.graphics.endFill();
+					colorOverlay.graphics.drawRect(0, 0, buildingSize, buildingSize);
+					colorOverlay.graphics.endFill();
 
-					var bitmap:Bitmap = new Bitmap(warning);
+					var buildings:Array<Dynamic> = cell.buildings;
+					var buildingBmp:Bitmap = new Bitmap(warning);
 					if (buildings.length > 0)
 					{
 						if (buildings.length > 1)
@@ -165,27 +185,52 @@ class Main extends Sprite
 
 						if (buildings[0].buildingType  == "ENERGY")
 						{
-							bitmap = new Bitmap(energy);
+							buildingBmp = new Bitmap(energy);
 						}
 						else if (buildings[0].buildingType  == "ATTACK")
 						{
-							bitmap = new Bitmap(sword);
+							buildingBmp = new Bitmap(attackBuildingBmd);
 						}
 						else if (buildings[0].buildingType  == "DEFENSE")
 						{
-							bitmap = new Bitmap(shield);
+							buildingBmp = new Bitmap(shield);
 						}
+						
+						if (buildings[0].playerType == "B") {
+							buildingBmp.x = buildingBmp.width;
+							buildingBmp.scaleX = -1;
+						}
+						
+						
 					}
 					else
 					{
-						bitmap = new Bitmap(fields);
+						buildingBmp = new Bitmap(fields);
 					}
-					
+
+					var missiles:Array<Dynamic> = cell.missiles;
+					var missileBmp:Bitmap = new Bitmap();
+					if (missiles.length > 0)
+					{
+						if (missiles.length > 1)
+						{
+							throw "more than one missile on a cell, handle this";
+						}
+
+						missileBmp.bitmapData = missile;
+						if (missiles[0].playerType == "A")
+						{
+							missileBmp.x = missileBmp.width;
+							missileBmp.scaleX = -1;
+						}
+					}
+
 					var sprite:Sprite = new Sprite();
-					sprite.addChild(bitmap);
-					sprite.addChild(overlay);
-					sprite.x = cell.x * (32 + 2);
-					sprite.y = cell.y * (32 + 2);
+					sprite.addChild(buildingBmp);
+					sprite.addChild(colorOverlay);
+					sprite.addChild(missileBmp);
+					sprite.x = cell.x * (buildingSize + spacingSize);
+					sprite.y = cell.y * (buildingSize + spacingSize);
 					gameMap.add(sprite);
 				}
 
@@ -196,5 +241,6 @@ class Main extends Sprite
 			trace(e);
 		}
 	}
+	
 
 }
