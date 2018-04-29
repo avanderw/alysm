@@ -160,22 +160,6 @@ class Main extends Sprite
 				{
 					trace(cell, cell.cellOwner);
 
-					var colorOverlay:Sprite = new Sprite();
-					colorOverlay.blendMode = BlendMode.ADD;
-					if (cell.cellOwner == "A")
-					{
-						colorOverlay.graphics.beginFill(0xFF0000);
-					}
-					else if (cell.cellOwner == "B")
-					{
-						colorOverlay.graphics.beginFill(0x0000FF);
-					}
-					else
-					{
-						colorOverlay.graphics.beginFill();
-					}
-					colorOverlay.graphics.drawRect(0, 0, buildingSize, buildingSize);
-					colorOverlay.graphics.endFill();
 
 					var buildings:Array<Dynamic> = cell.buildings;
 					var buildingBmp:Building = (buildings.length > 0) ? new Building(buildings[0]) : new Building({});
@@ -203,7 +187,6 @@ class Main extends Sprite
 
 					var sprite:Sprite = new Sprite();
 					sprite.addChild(buildingBmp);
-					sprite.addChild(colorOverlay);
 					sprite.addChild(missileBmp);
 					sprite.x = cell.x * (buildingSize + spacingSize);
 					sprite.y = cell.y * (buildingSize + spacingSize);
