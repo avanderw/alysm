@@ -14,8 +14,7 @@ import openfl.text.TextFormat;
  */
 class Button extends Sprite
 {
-	var _width:Int = 150;
-	var _height:Int;
+	var padding:Int = 2;
 	var bg:Sprite;
 	public function new(txt:String, handler:Dynamic->Void)
 	{
@@ -27,16 +26,13 @@ class Button extends Sprite
 			tf.setTextFormat(new TextFormat(Assets.getFont("font/OpenSans-Regular.ttf").fontName, 12));
 			tf.selectable = false;
 			tf.text = txt;
-			tf.width = _width;
-			tf.autoSize = TextFieldAutoSize.CENTER;
-			tf.y = Math.round(tf.height / 2);
-
-			_height = Math.round(tf.height * 2);
+			tf.x = tf.y = padding +1;
+			tf.autoSize = TextFieldAutoSize.LEFT;
 
 			bg = new Sprite();
-			deselect();
 			addChild(bg);
 			addChild(tf);
+			deselect();
 
 			addEventListener(MouseEvent.CLICK, handler);
 			addEventListener(Event.SELECT, handler);
@@ -53,9 +49,9 @@ class Button extends Sprite
 		try
 		{
 			bg.graphics.clear();
-			bg.graphics.lineStyle(1);
-			bg.graphics.beginFill(0xeeeeee);
-			bg.graphics.drawRoundRect(0, 0, _width, _height, 5);
+			bg.graphics.lineStyle(2);
+			bg.graphics.beginFill(0xfefefe);
+			bg.graphics.drawRoundRect(padding, padding, width+2*padding, height+2*padding, 5);
 			bg.graphics.endFill();
 			
 			dispatchEvent(new Event(Event.SELECT));
@@ -69,9 +65,9 @@ class Button extends Sprite
 	public function deselect()
 	{
 		bg.graphics.clear();
-		bg.graphics.lineStyle(1);
+		bg.graphics.lineStyle(2);
 		bg.graphics.beginFill(0xdddddd);
-		bg.graphics.drawRoundRect(0, 0, _width, _height, 5);
+		bg.graphics.drawRoundRect(padding, padding, width+2*padding, height+2*padding, 5);
 		bg.graphics.endFill();
 	}
 

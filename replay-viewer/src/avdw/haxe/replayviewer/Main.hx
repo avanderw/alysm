@@ -11,6 +11,9 @@ import openfl.display.StageAlign;
 import openfl.display.StageScaleMode;
 import openfl.events.Event;
 import openfl.text.Font;
+import openfl.text.TextField;
+import openfl.text.TextFieldAutoSize;
+import openfl.text.TextFormat;
 import sys.FileSystem;
 import sys.io.File;
 
@@ -31,8 +34,9 @@ class Main extends Sprite
 	var fields:BitmapData;
 	var warning:BitmapData;
 	var missile:BitmapData;
-	var buildingDetails:BuildingDetails;
+	var gameDetails:GameDetails;
 	var playerDetails:PlayerDetails;
+	var roundText:TextField;
 
 	public function new()
 	{
@@ -143,13 +147,25 @@ class Main extends Sprite
 			var spacingSize:Int = 4;
 			var map = Json.parse(File.getContent(directory + "/Player 1/JsonMap.json"));
 
-			if (buildingDetails == null)
+			if (gameDetails == null)
 			{
-				buildingDetails = new BuildingDetails(map.gameDetails);
-				buildingDetails.x = stage.stageWidth - buildingDetails.width;
-				buildingDetails.y = stage.stageHeight - buildingDetails.height;
-				addChild(buildingDetails);
+				gameDetails = new GameDetails(map.gameDetails);
+				gameDetails.x = stage.stageWidth - gameDetails.width;
+				gameDetails.y = stage.stageHeight - gameDetails.height;
+				addChild(gameDetails);
 			}
+
+			if (roundText == null)
+			{
+				roundText = new TextField();
+				roundText.setTextFormat(new TextFormat(AssetCache.font.fontName, 64));
+				addChild(roundText);
+			}
+
+			roundText.text = "Round " + map.gameDetails.round;
+			roundText.autoSize = TextFieldAutoSize.LEFT;
+			roundText.y = gameDetails.y;
+			roundText.x = gameDetails.x - roundText.width;
 
 			trace(map);
 			//trace(map.gameMap);
@@ -160,34 +176,43 @@ class Main extends Sprite
 				{
 					trace(cell, cell.cellOwner);
 
-
 					var buildings:Array<Dynamic> = cell.buildings;
 					var buildingBmp:Building = (buildings.length > 0) ? new Building(buildings[0]) : new Building({});
 					if (buildings.length > 1)
 					{
 						throw "more than one building on a cell, handle this";
 					}
-
+					buildingBmp.graphics.lineStyle(2, cell.cellOwner == "A" ? AssetCache.darkA : AssetCache.darkB);
+					buildingBmp.graphics.beginFill(cell.cellOwner == "A" ? AssetCache.lightB : AssetCache.lightB);
+					buildingBmp.graphics.drawRect(0, 0, buildingBmp.width+4, buildingBmp.height+4);
+					buildingBmp.graphics.endFill();
+					
 					var missiles:Array<Dynamic> = cell.missiles;
-					var missileBmp:Bitmap = new Bitmap();
+					var missileGroup:Group = new Group();
 					if (missiles.length > 0)
 					{
-						if (missiles.length > 1)
+						if (missiles.length > 2)
 						{
-							throw "more than one missile on a cell, handle this";
+							throw "more than two missiles on a cell, handle this";
 						}
 
-						missileBmp.bitmapData = missile;
-						if (missiles[0].playerType == "A")
+						var m1:Missile = new Missile(missiles[0]);
+						m1.y = -6;
+						m1.x = (buildingBmp.width - m1.width) / 2;
+						missileGroup.add(m1);
+						if (missiles.length > 1)
 						{
-							missileBmp.x = missileBmp.width;
-							missileBmp.scaleX = -1;
+							var m2:Missile = new Missile(missiles[1]);
+							m2.y = buildingBmp.height - m2.height + 6;
+							m2.x = (buildingBmp.width - m1.width) / 2;
+							missileGroup.add(m2);
 						}
+
 					}
 
 					var sprite:Sprite = new Sprite();
 					sprite.addChild(buildingBmp);
-					sprite.addChild(missileBmp);
+					sprite.addChild(missileGroup);
 					sprite.x = cell.x * (buildingSize + spacingSize);
 					sprite.y = cell.y * (buildingSize + spacingSize);
 					gameMap.add(sprite);

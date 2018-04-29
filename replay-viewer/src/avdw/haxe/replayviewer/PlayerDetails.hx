@@ -72,7 +72,7 @@ class PlayerSprite extends Sprite
 {
 	var _name:String;
 
-	public function new(name:String, expandLeft:Bool)
+	public function new(name:String, isPlayerA:Bool)
 	{
 		super();
 		_name = name;
@@ -80,6 +80,7 @@ class PlayerSprite extends Sprite
 		var nameText:TextField = new TextField();
 		nameText.setTextFormat(new TextFormat(AssetCache.font.fontName, 80));
 		nameText.autoSize = TextFieldAutoSize.LEFT;
+		nameText.textColor = isPlayerA ? AssetCache.darkA : AssetCache.darkB;
 		nameText.text = name;
 
 		var statusScore:Bitmap = new Bitmap(AssetCache.statusScore);
@@ -92,25 +93,25 @@ class PlayerSprite extends Sprite
 		statusHealth.y = statusEnergy.y + statusEnergy.height + 4;
 		statusDamage.y = statusHealth.y + statusHealth.height + 4;
 
-		scoreText = statusText(expandLeft);
-		energyText = statusText(expandLeft);
-		healthText = statusText(expandLeft);
-		damageText = statusText(expandLeft);
+		scoreText = statusText(isPlayerA);
+		energyText = statusText(isPlayerA);
+		healthText = statusText(isPlayerA);
+		damageText = statusText(isPlayerA);
 
 		scoreText.y = statusScore.y - 2;
 		energyText.y = statusEnergy.y -2;
 		healthText.y = statusHealth.y -2;
 		damageText.y = statusDamage.y -2;
 
-		statusScore.x = (expandLeft) ? scoreText.width + 4 : 0;
-		statusEnergy.x = (expandLeft) ? energyText.width + 4 : 0;
-		statusHealth.x = (expandLeft) ? healthText.width + 4 : 0;
-		statusDamage.x = (expandLeft) ? damageText.width + 4 : 0;
+		statusScore.x = (isPlayerA) ? scoreText.width + 4 : 0;
+		statusEnergy.x = (isPlayerA) ? energyText.width + 4 : 0;
+		statusHealth.x = (isPlayerA) ? healthText.width + 4 : 0;
+		statusDamage.x = (isPlayerA) ? damageText.width + 4 : 0;
 		
-		scoreText.x = (expandLeft) ? 0 : statusScore.width + 4;
-		energyText.x = (expandLeft) ? 0 : statusEnergy.width + 4;
-		healthText.x = (expandLeft) ? 0 : statusHealth.width + 4;
-		damageText.x = (expandLeft) ? 0 : statusDamage.width + 4;
+		scoreText.x = (isPlayerA) ? 0 : statusScore.width + 4;
+		energyText.x = (isPlayerA) ? 0 : statusEnergy.width + 4;
+		healthText.x = (isPlayerA) ? 0 : statusHealth.width + 4;
+		damageText.x = (isPlayerA) ? 0 : statusDamage.width + 4;
 
 		var statusGroup:Group = new Group();
 		statusGroup.addChild(statusScore);
@@ -122,8 +123,8 @@ class PlayerSprite extends Sprite
 		statusGroup.add(healthText);
 		statusGroup.add(damageText);
 
-		nameText.x = (expandLeft) ? statusGroup.width + 6 : 0;
-		statusGroup.x = (expandLeft) ? 0 : nameText.width;
+		nameText.x = (isPlayerA) ? statusGroup.width + 6 : 0;
+		statusGroup.x = (isPlayerA) ? 0 : nameText.width;
 
 		addChild(statusGroup);
 		addChild(nameText);

@@ -13,7 +13,7 @@ import openfl.text.TextFormat;
  * ...
  * @author Andrew van der Westhuizen
  */
-class BuildingDetails extends Sprite
+class GameDetails extends Sprite
 {
 
 	public function new(gameDetails:Dynamic)
@@ -90,6 +90,7 @@ class BuildingDetails extends Sprite
 			addChild(attackPriceText);
 			addChild(defensePriceText);
 			addChild(energyPriceText);
+			
 
 			/*
 			var attackPriceBmp:Bitmap = new Bitmap(statusPrice);

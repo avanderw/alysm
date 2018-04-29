@@ -12,6 +12,7 @@ class ButtonGroup extends Sprite
 	var selectedIdx:Int = 0;
 	var buttons:Array<Button> = new Array();
 	var invalid:Bool = true;
+	var addedTo:Bool = false;
 
 	public function new()
 	{
@@ -25,6 +26,15 @@ class ButtonGroup extends Sprite
 					resize();
 					buttons[selectedIdx].select();
 					invalid = false;
+
+					if (addedTo)
+					{
+						graphics.clear();
+						graphics.beginFill(0xFFFFFF);
+						graphics.drawRect(0, 0, width, height);
+						graphics.endFill();
+						addedTo = false;
+					}
 				}
 			}
 			catch (e:Dynamic)
@@ -68,6 +78,7 @@ class ButtonGroup extends Sprite
 		button.addEventListener(MouseEvent.CLICK, selectButton);
 		buttons.push(button);
 		addChild(button);
+		addedTo = true;
 		invalidate();
 	}
 
