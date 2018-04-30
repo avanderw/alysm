@@ -19,7 +19,7 @@ class GameDetails extends Sprite
 	public function new(gameDetails:Dynamic)
 	{
 		super();
-		trace(gameDetails);
+		//trace(gameDetails);
 
 		try
 		{

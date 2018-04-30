@@ -43,20 +43,20 @@ class PlayerDetails extends Sprite
 		}
 	}
 
-	public function update(players:Array<Dynamic>)
+	public function update(players:Array<Dynamic>, energyGrowthA:Int, energyGrowthB:Int)
 	{
 		try
 		{
-			trace(players);
+			//trace(players);
 			for (i in 0...players.length)
 			{
 				if (players[i].playerType == "A")
 				{
-					playerA.update(players[i]);
+					playerA.update(players[i], energyGrowthA);
 				}
 				else if (players[i].playerType == "B")
 				{
-					playerB.update(players[i]);
+					playerB.update(players[i], energyGrowthB);
 				}
 			}
 		}
@@ -123,8 +123,26 @@ class PlayerSprite extends Sprite
 		statusGroup.add(healthText);
 		statusGroup.add(damageText);
 
+		/*var scoreGrowthBmp:Bitmap = new Bitmap(AssetCache.upArrow);
+		scoreGrowthBmp.x = isPlayerA ? scoreText.x - scoreGrowthBmp.width : scoreText.x + scoreText.width;
+		scoreGrowthBmp.y = statusScore.y;
+		statusGroup.add(scoreGrowthBmp);
+		scoreGrowthText = statusText(isPlayerA);
+		scoreGrowthText.y = scoreGrowthBmp.y - 2;
+		scoreGrowthText.x = isPlayerA ? scoreGrowthBmp.x - scoreGrowthText.width : scoreGrowthBmp.x + scoreGrowthBmp.width;
+		statusGroup.add(scoreGrowthText);*/
+		
+		var energyGrowthBmp:Bitmap = new Bitmap(AssetCache.upArrow);
+		energyGrowthBmp.x = isPlayerA ? energyText.x - energyGrowthBmp.width : energyText.x + energyText.width;
+		energyGrowthBmp.y = statusEnergy.y;
+		statusGroup.add(energyGrowthBmp);
+		energyGrowthText = statusText(isPlayerA);
+		energyGrowthText.y = energyGrowthBmp.y - 2;
+		energyGrowthText.x = isPlayerA ? energyGrowthBmp.x - energyGrowthText.width : energyGrowthBmp.x + energyGrowthBmp.width;
+		statusGroup.add(energyGrowthText);
+		
 		nameText.x = (isPlayerA) ? statusGroup.width + 6 : 0;
-		statusGroup.x = (isPlayerA) ? 0 : nameText.width;
+		statusGroup.x = (isPlayerA) ? 64 : nameText.width;
 
 		addChild(statusGroup);
 		addChild(nameText);
@@ -136,23 +154,26 @@ class PlayerSprite extends Sprite
 	var energyText:TextField;
 	var healthText:TextField;
 	var damageText:TextField;
+	var energyGrowthText:flash.text.TextField;
+	var scoreGrowthText:flash.text.TextField;
 	function statusText(expandLeft:Bool):TextField
 	{
+		var tf:TextField = new TextField();
 		if (format == null)
 		{
 			format = new TextFormat(AssetCache.font.fontName, 16);
 			format.align = (expandLeft) ? TextFormatAlign.RIGHT : TextFormatAlign.LEFT;
 		}
 
-		var tf:TextField = new TextField();
 		tf.setTextFormat(format);
-		tf.text = "0000";
+		tf.text = "00000";
+		tf.width = tf.textWidth;
 		tf.height = tf.textHeight;
 
 		return tf;
 	}
 
-	public function update(player:Dynamic)
+	public function update(player:Dynamic, energyGrowth:Int)
 	{
 		try
 		{
@@ -160,6 +181,8 @@ class PlayerSprite extends Sprite
 			energyText.text = player.energy;
 			healthText.text = player.health;
 			damageText.text = player.hitsTaken;
+			//scoreGrowthText.text = ""+ scoreGrowth;
+			energyGrowthText.text = ""+ energyGrowth;
 			var playerType:String = player.playerType;
 		}
 		catch (e:Dynamic)

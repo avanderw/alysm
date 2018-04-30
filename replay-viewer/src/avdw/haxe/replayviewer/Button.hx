@@ -1,5 +1,6 @@
 package avdw.haxe.replayviewer;
 
+import flash.display.Bitmap;
 import openfl.Assets;
 import openfl.display.Sprite;
 import openfl.events.Event;
@@ -16,14 +17,28 @@ class Button extends Sprite
 {
 	var padding:Int = 2;
 	var bg:Sprite;
-	public function new(txt:String, handler:Dynamic->Void)
+	var dark:UInt;
+	var light:UInt;
+	var tf:TextField;
+	public function new(txt:String, handler:Dynamic->Void, dark:UInt = 0x000000, light:UInt = 0xdddddd)
 	{
 		super();
+		this.light = light;
+		this.dark = dark;
 
 		try
 		{
-			var tf:TextField = new TextField();
-			tf.setTextFormat(new TextFormat(Assets.getFont("font/OpenSans-Regular.ttf").fontName, 12));
+			var energyBmp:Bitmap = null;
+			if (txt.indexOf("Energy") > 0)
+			{
+				energyBmp = new Bitmap(AssetCache.statusEnergy);
+				energyBmp.x = 5;
+				energyBmp.y = 23;
+				txt = txt.substring(0, txt.indexOf("Energy")) + "  " + txt.substring(txt.indexOf("Energy:") + "Energy:".length);
+			}
+
+			tf = new TextField();
+			tf.setTextFormat(new TextFormat(AssetCache.font.fontName, 16));
 			tf.selectable = false;
 			tf.text = txt;
 			tf.x = tf.y = padding +1;
@@ -33,6 +48,11 @@ class Button extends Sprite
 			addChild(bg);
 			addChild(tf);
 			deselect();
+
+			if (energyBmp != null)
+			{
+				addChild(energyBmp);
+			}
 
 			addEventListener(MouseEvent.CLICK, handler);
 			addEventListener(Event.SELECT, handler);
@@ -49,11 +69,11 @@ class Button extends Sprite
 		try
 		{
 			bg.graphics.clear();
-			bg.graphics.lineStyle(2);
-			bg.graphics.beginFill(0xfefefe);
+			bg.graphics.lineStyle(2, light);
+			bg.graphics.beginFill(dark);
 			bg.graphics.drawRoundRect(padding, padding, width+2*padding, height+2*padding, 5);
 			bg.graphics.endFill();
-			
+			tf.textColor = 0xFFFFFF;
 			dispatchEvent(new Event(Event.SELECT));
 		}
 		catch (e:Dynamic)
@@ -65,10 +85,11 @@ class Button extends Sprite
 	public function deselect()
 	{
 		bg.graphics.clear();
-		bg.graphics.lineStyle(2);
-		bg.graphics.beginFill(0xdddddd);
+		bg.graphics.lineStyle(2, dark);
+		bg.graphics.beginFill(light);
 		bg.graphics.drawRoundRect(padding, padding, width+2*padding, height+2*padding, 5);
 		bg.graphics.endFill();
+		tf.textColor = 0;
 	}
 
 }

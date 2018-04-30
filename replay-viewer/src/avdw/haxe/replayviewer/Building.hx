@@ -17,6 +17,8 @@ import openfl.text.TextFormatAlign;
  */
 class Building extends Sprite
 {
+	public var type:String;
+	public var energy:Int;
 	var buildingData:Dynamic;
 	public function new(buildingData:Dynamic)
 	{
@@ -25,9 +27,9 @@ class Building extends Sprite
 		var bmp:Bitmap = new Bitmap();
 		switch (buildingData.buildingType)
 		{
-			case "ATTACK": bmp.bitmapData = AssetCache.buildingAttack;
-			case "DEFENSE": bmp.bitmapData = AssetCache.buildingDefense;
-			case "ENERGY": bmp.bitmapData = AssetCache.buildingEnergy;
+			case "ATTACK": bmp.bitmapData = AssetCache.buildingAttack; type = "ATTACK";
+			case "DEFENSE": bmp.bitmapData = AssetCache.buildingDefense; type = "DEFENSE";
+			case "ENERGY": bmp.bitmapData = AssetCache.buildingEnergy; type = "ENERGY";
 			default: bmp.bitmapData = new BitmapData(64, 64, true, 0);
 		}
 
@@ -67,7 +69,7 @@ class Building extends Sprite
 		statuses = new Array();
 		if (buildingData.price > 0) {statuses.push(createStatus(AssetCache.statusPrice, buildingData.price));}
 		if (buildingData.constructionScore > 0) {statuses.push(createStatus(AssetCache.statusScore, buildingData.constructionScore));}
-		if (buildingData.energyGeneratedPerTurn > 0) {statuses.push(createStatus(AssetCache.statusEnergy, buildingData.energyGeneratedPerTurn));}
+		if (buildingData.energyGeneratedPerTurn > 0) {statuses.push(createStatus(AssetCache.statusEnergy, buildingData.energyGeneratedPerTurn)); energy = buildingData.energyGeneratedPerTurn; }
 		if (buildingData.weaponCooldownPeriod > 0) {statuses.push(createStatus(AssetCache.statusCooldownPeriod, buildingData.weaponCooldownPeriod));}
 		if (buildingData.weaponSpeed > 0) {statuses.push(createStatus(AssetCache.statusSpeed, buildingData.weaponSpeed));}
 		if (buildingData.weaponDamage > 0) {statuses.push(createStatus(AssetCache.statusDamage, buildingData.weaponDamage));}

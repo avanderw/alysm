@@ -77,21 +77,6 @@ class Main extends Sprite
 		stage.align = StageAlign.TOP_LEFT;
 
 		updateMatchList();
-		resize();
-	}
-
-	function resize()
-	{
-		try
-		{
-			roundList.x = matchList.width;
-			gameMap.x = roundList.x + roundList.width;
-			matchList.invalidate();
-		}
-		catch (e:Dynamic)
-		{
-			trace(e);
-		}
 	}
 
 	function updateMatchList()
@@ -102,16 +87,35 @@ class Main extends Sprite
 
 			for (match in matches)
 			{
-				var btn = new Button(match, function(e:Dynamic)
+				var rounds = FileSystem.readDirectory(config.matchDirectory + "/" + match);
+				var map = Json.parse(File.getContent(config.matchDirectory + "/" + match + "/Round " + pad(rounds.length-1) + "/Player 1/JsonMap.json"));
+				//trace(map.players);
+				var btn = new Button("A:"+map.players[0].score+"\nB:"+map.players[1].score+"\nRounds " + rounds.length, function(e:Dynamic)
 				{
 					updateRoundList(config.matchDirectory + "/" + match);
-				});
+				}, map.players[0].score > map.players[1].score ? AssetCache.darkWin : AssetCache.darkLose,
+				map.players[0].score > map.players[1].score ? AssetCache.lightWin : AssetCache.lightLose);
 				matchList.add(btn);
 			}
 		}
 		catch (e:Dynamic)
 		{
 			trace(e);
+		}
+	}
+
+	function pad(length:Int):String
+	{
+		if (length < 10)
+		{
+			return "00" +length;
+		}
+		else if (length < 100)
+		{
+			return return "0" + length;
+		}
+		else{
+			return cast length;
 		}
 	}
 
@@ -123,15 +127,30 @@ class Main extends Sprite
 			roundList.removeAll();
 			for (round in rounds)
 			{
+				var roundData = Json.parse(File.getContent(directory + "/" + round + "/Player 1/JsonMap.json"));
+				var playerCommand = File.getContent(directory + "/" + round + "/Player 1/playerCommand.txt");
+				var dark = 0x0;
+				var light = 0xdddddd;
+				var commandText = "";
+				switch (playerCommand.substring(playerCommand.lastIndexOf(",") +1))
+				{
+					case "0": commandText = playerCommand.substring(0, playerCommand.lastIndexOf(",")) + ",Defend"; dark = AssetCache.darkDefend; light = AssetCache.lightDefend;
+					case "1": commandText = playerCommand.substring(0, playerCommand.lastIndexOf(",")) + ",Attack"; dark = AssetCache.darkAttack; light = AssetCache.lightAttack;
+					case "2": commandText = playerCommand.substring(0, playerCommand.lastIndexOf(",")) + ",Energy"; dark = AssetCache.darkEnergy; light = AssetCache.lightEnergy;
+					default: commandText = playerCommand;
+				}
 
-				var btn = new Button(round, function(e:Dynamic)
+				var btn = new Button(round +
+									 "\nEnergy:" + roundData.players[0].energy
+									 //"\nH: " + roundData.players[0].health +
+									 //"\n" + commandText
+									 , function(e:Dynamic)
 				{
 					gameMap.removeAll();
 					loadRound(directory + "/" + round);
-				});
+				}, dark, light);
 				roundList.add(btn);
 			}
-			resize();
 		}
 		catch (e:Dynamic)
 		{
@@ -149,6 +168,7 @@ class Main extends Sprite
 
 			if (gameDetails == null)
 			{
+				roundList.x = matchList.width;
 				gameDetails = new GameDetails(map.gameDetails);
 				gameDetails.x = stage.stageWidth - gameDetails.width;
 				gameDetails.y = stage.stageHeight - gameDetails.height;
@@ -162,19 +182,19 @@ class Main extends Sprite
 				addChild(roundText);
 			}
 
-			roundText.text = "Round " + map.gameDetails.round;
+			roundText.text = ":Round " + map.gameDetails.round;
 			roundText.autoSize = TextFieldAutoSize.LEFT;
-			roundText.y = gameDetails.y;
-			roundText.x = gameDetails.x - roundText.width;
+			roundText.y = (gameDetails.height - roundText.height) / 2;
 
-			trace(map);
+			//trace(map);
 			//trace(map.gameMap);
-
+			var energyGrowthA:Int = 5;
+			var energyGrowthB:Int = 5;
 			for (row in cast (map.gameMap, Array<Dynamic>))
 			{
 				for (cell in cast (row, Array<Dynamic>))
 				{
-					trace(cell, cell.cellOwner);
+					//trace(cell, cell.cellOwner);
 
 					var buildings:Array<Dynamic> = cell.buildings;
 					var buildingBmp:Building = (buildings.length > 0) ? new Building(buildings[0]) : new Building({});
@@ -186,7 +206,7 @@ class Main extends Sprite
 					buildingBmp.graphics.beginFill(cell.cellOwner == "A" ? AssetCache.lightB : AssetCache.lightB);
 					buildingBmp.graphics.drawRect(0, 0, buildingBmp.width+4, buildingBmp.height+4);
 					buildingBmp.graphics.endFill();
-					
+
 					var missiles:Array<Dynamic> = cell.missiles;
 					var missileGroup:Group = new Group();
 					if (missiles.length > 0)
@@ -216,21 +236,49 @@ class Main extends Sprite
 					sprite.x = cell.x * (buildingSize + spacingSize);
 					sprite.y = cell.y * (buildingSize + spacingSize);
 					gameMap.add(sprite);
+
+					if (cell.cellOwner == "A")
+					{
+						switch (buildingBmp.type)
+						{
+							case "ENERGY": energyGrowthA += buildingBmp.energy;
+						}
+					}
+					else
+					{
+						switch (buildingBmp.type)
+						{
+							case "ENERGY": energyGrowthB += buildingBmp.energy;
+						}
+					}
+
 				}
 			}
 			if (playerDetails == null)
 			{
 				addChild(playerDetails = new PlayerDetails());
-				playerDetails.x = gameMap.x + (gameMap.width - playerDetails.width) / 2;
-				playerDetails.y = gameMap.y + gameMap.height;
 			}
+			
+			playerDetails.update(map.players, energyGrowthA, energyGrowthB);
 
-			playerDetails.update(map.players);
+			if (positionOnce)
+			{
+				playerDetails.x = roundList.x + roundList.width + 5;
+				playerDetails.y = (gameDetails.height - playerDetails.height) / 2;
+				gameMap.x = playerDetails.x;
+				gameMap.y = gameDetails.height + 5;
+				//playerDetails.x = gameMap.x + (gameMap.width - playerDetails.width) / 2;
+				//playerDetails.y = gameMap.y + gameMap.height;
+				roundText.x = (playerDetails.x + playerDetails.width);
+				positionOnce = false;
+			}
 		}
 		catch (e:Dynamic)
 		{
 			trace(e);
 		}
 	}
+
+	var positionOnce:Bool = true;
 
 }

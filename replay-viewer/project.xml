@@ -9,7 +9,7 @@
 	<app main="avdw.haxe.replayviewer.Main" file="replay-viewer" path="bin" />
 	
 	<window background="#ffffff" fps="60" />
-	<window width="1024" height="768" unless="mobile || html5" />
+	<window width="1600" height="900" unless="mobile || html5" />
 	<window antialiasing="0" />
 	<window orientation="landscape" vsync="false" antialiasing="0" if="cpp" />
 	

@@ -24,6 +24,7 @@ class AssetCache
 	static public var statusDestroyMultiplier:BitmapData;
 	static public var statusCooldownLeft:BitmapData;
 	static public var statusDamage:BitmapData;
+	static public var upArrow:BitmapData;
 
 	static public var buildingEmpty:BitmapData;
 	static public var buildingAttack:BitmapData;
@@ -36,11 +37,21 @@ class AssetCache
 	static public var lightA:UInt = 0xBED6FF;
 	static public var darkB:UInt = 0xB28019;
 	static public var lightB:UInt = 0xFFF8EA;
+	static public var darkWin:UInt = 0x00B22B;
+	static public var lightWin:UInt = 0xBCFFCC;
+	static public var darkLose:UInt = 0xB2000E;
+	static public var lightLose:UInt = 0xFFBCC1;
+	static public var darkEnergy:UInt = 0xB2880C;
+	static public var lightEnergy:UInt = 0xFFF2CD;
+	static public var darkDefend:UInt = 0x087F62;
+	static public var lightDefend:UInt = 0xCCFFF2;
+	static public var darkAttack:UInt = 0x9410B2;
+	static public var lightAttack:UInt = 0xF7D3FF;
 
 	var energyColor:ColorMatrixFilter = new ColorMatrixFilter([
 				0, 0, 0, 0, 255,
-				0, 0, 0, 0, 189,
-				0, 0, 0, 0, 25,
+				0, 0, 0, 0, 180,
+				0, 0, 0, 0, 0,
 				0, 0, 0, 1, 0
 			]);
 	var defenseColor:ColorMatrixFilter = new ColorMatrixFilter([
@@ -117,6 +128,9 @@ class AssetCache
 
 		missile = Assets.getBitmapData("img/missile.png");
 		missile.applyFilter(missile, missile.rect, new Point(), missileColor);
+		
+		upArrow = Assets.getBitmapData("img/up-arrow.png");
+		upArrow.applyFilter(upArrow, upArrow.rect, new Point(), cooldownColor);
 	}
 
 }
