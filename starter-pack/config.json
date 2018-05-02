@@ -4,8 +4,8 @@
   "max-runtime-ms": 2000,
   "bot-meta": [
     {
-      "botLocation": "./starter-bots/java/target",
-      "botFileName": "java-sample-bot-1.0-SNAPSHOT-jar-with-dependencies.jar",
+      "botLocation": "../my-bots/naive-bot/target",
+      "botFileName": "naive-bot-1.0-SNAPSHOT-jar-with-dependencies.jar",
       "botLanguage": "java"
     },
     {
