@@ -1,7 +1,6 @@
 package avdw.haxe.replayviewer;
 
 import haxe.Json;
-import minimalcomps.components.Style;
 import openfl.Assets;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
@@ -10,6 +9,7 @@ import openfl.display.Sprite;
 import openfl.display.StageAlign;
 import openfl.display.StageScaleMode;
 import openfl.events.Event;
+import openfl.filters.GlowFilter;
 import openfl.text.Font;
 import openfl.text.TextField;
 import openfl.text.TextFieldAutoSize;
@@ -37,6 +37,7 @@ class Main extends Sprite
 	var gameDetails:GameDetails;
 	var playerDetails:PlayerDetails;
 	var roundText:TextField;
+	var glowFilter:GlowFilter = new GlowFilter(0x333333, 1, 3, 3, 16);
 
 	public function new()
 	{
@@ -211,12 +212,38 @@ class Main extends Sprite
 					var missileGroup:Group = new Group();
 					if (missiles.length > 0)
 					{
-						if (missiles.length > 2)
+						/*if (missiles.length > 2)
 						{
 							throw "more than two missiles on a cell, handle this";
+						}*/
+						
+						var missilesA:Array<Missile> = new Array();
+						var missilesB:Array<Missile> = new Array();
+						for (missile in missiles) {
+							if (missile.playerType == "A") {
+								missilesA.push(new Missile(missile));
+							} else if (missile.playerType == "B") {
+								missilesB.push(new Missile(missile));
+							}
+						}
+						
+						for (m in 0...missilesA.length) {
+							var missile:Missile = missilesA[m];
+							missile.x = m * 5;
+							missile.y = m * 2 - 6;
+							missile.filters = [glowFilter];
+							missileGroup.add(missile);
+						}
+						
+						for (m in 0...missilesB.length) {
+							var missile:Missile = missilesB[m];
+							missile.x = m * 5;
+							missile.y = buildingBmp.height - missile.height + m * 2 + 4;
+							missile.filters = [glowFilter];
+							missileGroup.add(missile);
 						}
 
-						var m1:Missile = new Missile(missiles[0]);
+						/*var m1:Missile = new Missile(missiles[0]);
 						m1.y = -6;
 						m1.x = (buildingBmp.width - m1.width) / 2;
 						missileGroup.add(m1);
@@ -226,9 +253,10 @@ class Main extends Sprite
 							m2.y = buildingBmp.height - m2.height + 6;
 							m2.x = (buildingBmp.width - m1.width) / 2;
 							missileGroup.add(m2);
-						}
+						}*/
 
 					}
+					missileGroup.x = (buildingBmp.width - missileGroup.width) / 2;
 
 					var sprite:Sprite = new Sprite();
 					sprite.addChild(buildingBmp);
