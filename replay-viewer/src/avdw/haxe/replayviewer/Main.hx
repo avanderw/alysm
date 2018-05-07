@@ -89,9 +89,10 @@ class Main extends Sprite
 			for (match in matches)
 			{
 				var rounds = FileSystem.readDirectory(config.matchDirectory + "/" + match);
-				var map = Json.parse(File.getContent(config.matchDirectory + "/" + match + "/Round " + pad(rounds.length-1) + "/Player 1/JsonMap.json"));
+				var players = FileSystem.readDirectory(config.matchDirectory + "/" + match + "/Round " + pad(rounds.length - 1));
+				var map = Json.parse(File.getContent(config.matchDirectory + "/" + match + "/Round " + pad(rounds.length-1) + "/"+players[0]+"/JsonMap.json"));
 				//trace(map.players);
-				var btn = new Button("A:"+map.players[0].score+"\nB:"+map.players[1].score+"\nRounds " + rounds.length, function(e:Dynamic)
+				var btn = new Button(players[0].substring(4)+":"+map.players[0].score+"\n"+players[1].substring(4)+":"+map.players[1].score+"\nRounds " + rounds.length, function(e:Dynamic)
 				{
 					updateRoundList(config.matchDirectory + "/" + match);
 				}, map.players[0].score > map.players[1].score ? AssetCache.darkWin : AssetCache.darkLose,
@@ -128,8 +129,9 @@ class Main extends Sprite
 			roundList.removeAll();
 			for (round in rounds)
 			{
-				var roundData = Json.parse(File.getContent(directory + "/" + round + "/Player 1/JsonMap.json"));
-				var playerCommand = File.getContent(directory + "/" + round + "/Player 1/playerCommand.txt");
+				var players = FileSystem.readDirectory(directory + "/" + round);
+				var roundData = Json.parse(File.getContent(directory + "/" + round + "/"+players[0]+"/JsonMap.json"));
+				var playerCommand = File.getContent(directory + "/" + round + "/"+players[0]+"/playerCommand.txt");
 				var dark = 0x0;
 				var light = 0xdddddd;
 				var commandText = "";
@@ -165,7 +167,8 @@ class Main extends Sprite
 		{
 			var buildingSize:Int = 64;
 			var spacingSize:Int = 4;
-			var map = Json.parse(File.getContent(directory + "/Player 1/JsonMap.json"));
+			var players = FileSystem.readDirectory(directory);
+			var map = Json.parse(File.getContent(directory + "/"+players[0]+"/JsonMap.json"));
 
 			if (gameDetails == null)
 			{
