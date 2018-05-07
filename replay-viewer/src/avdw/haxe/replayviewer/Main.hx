@@ -56,8 +56,12 @@ class Main extends Sprite
 			warning = Assets.getBitmapData("img/warning.png");
 			missile = Assets.getBitmapData("img/missile.png");
 
+			#if debug
 			config = Json.parse(File.getContent('../../../config.json'));
-
+			#else
+			config = Json.parse(File.getContent('./config.json'));
+			#end
+			
 			addChild(matchList = new ButtonGroup());
 			addChild(roundList = new ButtonGroup());
 			addChild(gameMap = new Group());
