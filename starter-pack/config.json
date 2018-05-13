@@ -1,6 +1,8 @@
 {
   "round-state-output-location": "./matches",
+  "game-config-file-location": "./game-config.properties",
   "max-runtime-ms": 2000,
   "player-a": "./reference-bot/java",
   "player-b": "./starter-bots/java"
 }
+
