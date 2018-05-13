@@ -65,7 +65,7 @@ class ButtonGroup extends Sprite
 			{
 				selectedIdx = buttons.length - 1;
 			}
-			invalidate();
+			this.invalid = true;
 		}
 		catch (e:Dynamic)
 		{
@@ -79,7 +79,7 @@ class ButtonGroup extends Sprite
 		buttons.push(button);
 		addChild(button);
 		addedTo = true;
-		invalidate();
+		this.invalid = true;
 	}
 
 	function selectButton(e:MouseEvent):Void
@@ -87,17 +87,12 @@ class ButtonGroup extends Sprite
 		try {
 			buttons[selectedIdx].deselect();
 			selectedIdx = getChildIndex(cast (e.currentTarget, Button));
-			invalidate();
+			this.invalid = true;
 		}
 		catch (e:Dynamic)
 		{
 			trace(e);
 		}
-	}
-
-	public function invalidate()
-	{
-		this.invalid = true;
 	}
 
 	public function resize()
