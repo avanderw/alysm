@@ -1,17 +1,8 @@
 {
   "round-state-output-location": "./matches",
-  "console-players": 0,
+  "game-config-file-location": "./game-config.properties",
   "max-runtime-ms": 2000,
-  "bot-meta": [
-    {
-      "botLocation": "../my-bots/naive-bot/target",
-      "botFileName": "naive-bot-1.0-SNAPSHOT-jar-with-dependencies.jar",
-      "botLanguage": "java"
-    },
-    {
-      "botLocation": "./reference-bot/java/target",
-      "botFileName": "reference-bot-1.0-SNAPSHOT-jar-with-dependencies.jar",
-      "botLanguage": "java"
-    }
-  ]
+  "player-a": "./reference-bot/java",
+  "player-b": "./starter-bots/java"
 }
+

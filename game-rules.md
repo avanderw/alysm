@@ -10,7 +10,7 @@
 * As a player, you will always be player A.
 * The player can only build buildings in their half of the map.
 * The coordinates for a cell on the map takes the form of **'X,Y'** starting from 0, e.g. the coordinates **'0,0'** will be the top left cell.
-* The entire map, player information, and building information will be visible to both players, including the opposing player's units.
+* The entire map, player information, and building information will be visible to both players, including the opposing player's buildings.
 
 **{X} and {Y} will be variable.**
 
@@ -85,7 +85,7 @@ The building will be a lower-case letter if it is still under construction and i
 * Each building will have an energy cost to build.
 * Each building will take a number of turns until it is fully built and ready, based on its type.
 
-* A building that is not fully built will be destroyed in one hit.
+* Buildings that are busy being built will not be hit by missles travelling over it.
 
 * The energy cost of a building is deducted from a player's energy total once the command to build a building has been successful.
 * Trying to place a building without enough energy for that building will result in a **'Do nothing'** command.
@@ -108,9 +108,9 @@ Able to take more hits than any other building, these buildings are great for so
 
 #### Attack Building:
 The main offensive building you can build that fires straight line missiles toward the opposing side. This will be the main way to damage the opposing player's buildings and base.
-The attack building has a firing rate, meaning it will fire a missile every **{Fire rate}** turns after it has been successfully built.
+The attack building has a firing rate, meaning it will fire a missile every **{Fire rate}** turns after it has been successfully built. 
 
-**Defence building details:**
+**Attack building details:**
 * Cost:    **30**
 * Health: **5**
 * Firing rate: **3**
@@ -122,16 +122,16 @@ The attack building has a firing rate, meaning it will fire a missile every **{F
 #### Energy Building:
 A utility building that provides **{Energy generated per turn}** extra energy per turn. These buildings have lower health and does not offer much in terms of defence.
 
-**Defence building details:**
+**Energy building details:**
 * Cost:    **20**
 * Health: **5**
 * Energy generated per turn: **3**
-* Construction time: **0**
+* Construction time: **1**
 * Constructed character: **E**
 * Under construction character: **e**
 
 ## Missiles
-* Currently only attack units will create missiles.
+* Currently only attack buildings will create missiles.
 * A missile will always deal all its damage on the building it hits firsts and stops, even if the building hit has less health than the damage dealt.
 * There is no limit to how many missiles can be in a single cell at one time.
 * Missiles do not interact with each other, meaning opposing missiles will not stop or impact one another.
@@ -142,14 +142,16 @@ A utility building that provides **{Energy generated per turn}** extra energy pe
 * Missiles move at least one cell the moment it is created.
 
 ## Score
-Each player will have a score based on the value of the buildings that the player destroyed of his opponent.
-**Note that a building that is not fully built will reward the full amount of points.**
+Each player will have a score based on the damage dealt by the player on both the opponent's health and buildings, as
+well as the players own energy generated and buildings built.
 
-Scores are calculated by adding:
-* Total damage dealt
+Scores are calculated by adding the following together:
+* Total damage dealt to opponent buildings
 * Fixed score for each building constructed
 * Total energy generated
-* End game HP x 100
+* Damage bonus for any damage done to your opponent's health
+
+Note that damage bonus is awarded each time your opponent's health pool is damaged, the player receives points equal to damage dealt times 100.
 
 **Scores will be used to determine a victor in the event of a stalemate or draw. If both bots draw in a tournament, a random winner will be selected, as only stagnant bots should result in this situation**
 
@@ -157,7 +159,7 @@ Scores are calculated by adding:
 * Each player gets a turn, and the turns run at the same time for both players. This means that each player's commands are captured, and only then is the round run.
 * Players may store state between turns via files in their bot folder.
 * Each bot will get a maximum time of 2 seconds to execute each command.
-* There will be a maximum of **{MAXIMUM_TURNS}** turns for each side, at which point the game the victor will be determined by the highest score.
+* There will be a maximum of **{MAXIMUM_TURNS}** turns for each side, at which point the victor of the game will be determined by the highest score.
 * The game engine will process commands in the following order:
     * Building will be created, based on the commands from the player.
     * Missiles will be generated from any attack buildings if they can fire that turn.

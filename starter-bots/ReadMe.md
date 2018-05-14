@@ -13,7 +13,7 @@ Follow these steps to submit a starter bot.
 1. Clone this repository.
 1. Create the starter bot in the language of your choice.
 1. Include a readme of any environment configuration and setup guide for your language on the tournament server.
-1. Create a new pull request for your starter bot.
+1. Create a new pull request to the **develop** branch for your starter bot.
 1. After peer review we will consider your starter bot for inclusion in the tournament.
 1. If the pull request is merged then the starter bot and language can be considered officially included and supported for the tournament.
 
@@ -23,5 +23,10 @@ Please ensure your starter bot follow these rules:
 
 1. Has a `bot.json` file.
 1. Can compile on any system and is in running order (Should not produce any errors when executing).
-1. Reads in the arguments from the game engine.
 1. Reads in the `state.json` file and parses that to a structure supported in your language.
+   * The configurations for buildings including cost, health, construction time, damage given, energy generated, map width, map height etc. must be read from the state file. It SHOULD NOT be hardcoded in your starter bot. 
+1. If there is a row that is under attack, and you have enough energy for a wall, build a wall at a random unoccupied location on that row.
+   * A row is under attack if: there is an enemy Attack unit on the row, and NO ally Defence buildings on that row.
+1. Else if you have enough energy for the most expensive building, build a random building type at a random unoccupied location.
+1. If you can't do one of the above two, save energy until you have enough for the most expensive building.
+1. Include a ReadMe.txt/md to explain some of the basics for those who want to use the bot. For example links to where to download the language and links to useful websites for debugging.
