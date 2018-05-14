@@ -1,6 +1,7 @@
 package avdw.haxe.replayviewer;
 
 import haxe.Json;
+import haxe.Timer;
 import openfl.Assets;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
@@ -14,6 +15,7 @@ import openfl.text.Font;
 import openfl.text.TextField;
 import openfl.text.TextFieldAutoSize;
 import openfl.text.TextFormat;
+import sys.FileStat;
 import sys.FileSystem;
 import sys.io.File;
 
@@ -66,6 +68,22 @@ class Main extends Sprite
 			addChild(roundList = new ButtonGroup());
 			addChild(gameMap = new Group());
 
+			var stat:FileStat = null;
+			var timer = new Timer(1000);
+			timer.run = function() {
+				if (stat == null) {
+					stat = FileSystem.stat(config.matchDirectory);
+					trace(stat.atime);
+				}
+				
+				var newStat = FileSystem.stat(config.matchDirectory);
+				if (stat.atime.getTime() < newStat.atime.getTime()) {
+					stat = newStat;
+					trace(stat.atime);
+					updateMatchList();
+				}
+			}
+			
 			addEventListener(Event.ADDED_TO_STAGE, added);
 		}
 		catch (e:Dynamic)
