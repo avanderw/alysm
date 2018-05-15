@@ -1,5 +1,8 @@
 package avdw.java.tdai.naivebot.entities;
 
+import avdw.java.tdai.naivebot.BotBehaviourTree;
+import avdw.java.tdai.naivebot.enums.PlayerType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,5 +26,12 @@ public class GameState {
         }
 
         return list;
+    }
+
+    public int getEnergyFor(PlayerType playerType){
+        return getPlayers().stream()
+                .filter(p -> p.playerType == playerType)
+                .mapToInt(p -> p.energy)
+                .sum();
     }
 }

@@ -4,36 +4,21 @@ import com.google.gson.Gson;
 import avdw.java.tdai.naivebot.entities.GameState;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class Main {
     private static final String COMMAND_FILE_NAME = "command.txt";
     private static final String STATE_FILE_NAME = "state.json";
 
     public static void main(String[] args) {
-        String state = "";
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(STATE_FILE_NAME));
-            StringBuilder sb = new StringBuilder();
-            state = br.readLine();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
-        Gson gson = new Gson();
-        GameState gameState = gson.fromJson(state, GameState.class);
-
-        Bot bot = new Bot(gameState);
-        String command = bot.Run();
-
-        writeBotResponseToFile(command);
+        BotBehaviourTree botBehaviourTree = new BotBehaviourTree(State.read(STATE_FILE_NAME));
+        writeBotResponseToFile(botBehaviourTree.run());
     }
 
     private static void writeBotResponseToFile(String command) {
         try {
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(COMMAND_FILE_NAME)));
-            bufferedWriter.write(command);
-            bufferedWriter.flush();
-            bufferedWriter.close();
+            Files.write(Paths.get(COMMAND_FILE_NAME), command.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
