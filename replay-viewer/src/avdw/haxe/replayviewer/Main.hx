@@ -2,9 +2,7 @@ package avdw.haxe.replayviewer;
 
 import haxe.Json;
 import openfl.Assets;
-import openfl.display.Bitmap;
 import openfl.display.BitmapData;
-import openfl.display.BlendMode;
 import openfl.display.Sprite;
 import openfl.display.StageAlign;
 import openfl.display.StageScaleMode;
@@ -59,9 +57,13 @@ class Main extends Sprite
 			#if debug
 			config = Json.parse(File.getContent('../../../config.json'));
 			#else
+			if (!FileSystem.exists('./config.json')) {
+				trace("config.json does not exist in replay-viewer.exe directory");
+				Sys.exit(1);
+			}
 			config = Json.parse(File.getContent('./config.json'));
 			#end
-			
+
 			addChild(matchList = new ButtonGroup());
 			addChild(roundList = new ButtonGroup());
 			addChild(gameMap = new Group());
@@ -86,6 +88,9 @@ class Main extends Sprite
 
 	function updateMatchList()
 	{
+		var playerA;
+		var bName:String;
+		var aName:String;
 		try
 		{
 			var matches = FileSystem.readDirectory(config.matchDirectory);
@@ -94,9 +99,36 @@ class Main extends Sprite
 			{
 				var rounds = FileSystem.readDirectory(config.matchDirectory + "/" + match);
 				var players = FileSystem.readDirectory(config.matchDirectory + "/" + match + "/Round " + pad(rounds.length - 1));
-				var map = Json.parse(File.getContent(config.matchDirectory + "/" + match + "/Round " + pad(rounds.length-1) + "/"+players[0]+"/JsonMap.json"));
+				if (players[0] != "endGameState.txt")
+				{
+					if (players[0] != "Player 1")
+					{
+						aName = players[0].substring(4);
+						bName = players[1].substring(4);
+					}
+					else {
+						aName = players[0];
+						bName = players[1];
+					}
+					playerA = players[0];
+				}
+				else
+				{
+					if (players[1] != "Player 1")
+					{
+						aName = players[1].substring(4);
+						bName = players[2].substring(4);
+					}
+					else {
+						aName = players[1];
+						bName = players[2];
+					}
+					playerA = players[1];
+				}
+				//trace(playerA);
+				var map = Json.parse(File.getContent(config.matchDirectory + "/" + match + "/Round " + pad(rounds.length-1) + "/"+playerA+"/JsonMap.json"));
 				//trace(map.players);
-				var btn = new Button(players[0].substring(4)+":"+map.players[0].score+"\n"+players[1].substring(4)+":"+map.players[1].score+"\nRounds " + rounds.length, function(e:Dynamic)
+				var btn = new Button(aName+":"+map.players[0].score+"\n"+bName+":"+map.players[1].score+"\nRounds " + rounds.length, function(e:Dynamic)
 				{
 					updateRoundList(config.matchDirectory + "/" + match);
 				}, map.players[0].score > map.players[1].score ? AssetCache.darkWin : AssetCache.darkLose,
@@ -106,7 +138,8 @@ class Main extends Sprite
 		}
 		catch (e:Dynamic)
 		{
-			trace(e);
+			trace("ERR:" + e);
+			Sys.exit(1);
 		}
 	}
 
@@ -134,8 +167,17 @@ class Main extends Sprite
 			for (round in rounds)
 			{
 				var players = FileSystem.readDirectory(directory + "/" + round);
-				var roundData = Json.parse(File.getContent(directory + "/" + round + "/"+players[0]+"/JsonMap.json"));
-				var playerCommand = File.getContent(directory + "/" + round + "/"+players[0]+"/playerCommand.txt");
+				var playerA = null;
+				if (players[0] != "endGameState.txt")
+				{
+					playerA = players[0];
+				}
+				else
+				{
+					playerA = players[1];
+				}
+				var roundData = Json.parse(File.getContent(directory + "/" + round + "/"+playerA+"/JsonMap.json"));
+				var playerCommand = File.getContent(directory + "/" + round + "/"+playerA+"/playerCommand.txt");
 				var dark = 0x0;
 				var light = 0xdddddd;
 				var commandText = "";
@@ -161,7 +203,7 @@ class Main extends Sprite
 		}
 		catch (e:Dynamic)
 		{
-			trace(e);
+			trace("ERR:"+e);
 		}
 	}
 
@@ -223,26 +265,32 @@ class Main extends Sprite
 						{
 							throw "more than two missiles on a cell, handle this";
 						}*/
-						
+
 						var missilesA:Array<Missile> = new Array();
 						var missilesB:Array<Missile> = new Array();
-						for (missile in missiles) {
-							if (missile.playerType == "A") {
+						for (missile in missiles)
+						{
+							if (missile.playerType == "A")
+							{
 								missilesA.push(new Missile(missile));
-							} else if (missile.playerType == "B") {
+							}
+							else if (missile.playerType == "B")
+							{
 								missilesB.push(new Missile(missile));
 							}
 						}
-						
-						for (m in 0...missilesA.length) {
+
+						for (m in 0...missilesA.length)
+						{
 							var missile:Missile = missilesA[m];
 							missile.x = m * 5;
 							missile.y = m * 2 - 6;
 							missile.filters = [glowFilter];
 							missileGroup.add(missile);
 						}
-						
-						for (m in 0...missilesB.length) {
+
+						for (m in 0...missilesB.length)
+						{
 							var missile:Missile = missilesB[m];
 							missile.x = m * 5;
 							missile.y = buildingBmp.height - missile.height + m * 2 + 4;
@@ -293,7 +341,7 @@ class Main extends Sprite
 			{
 				addChild(playerDetails = new PlayerDetails());
 			}
-			
+
 			playerDetails.update(map.players, energyGrowthA, energyGrowthB);
 
 			if (positionOnce)
