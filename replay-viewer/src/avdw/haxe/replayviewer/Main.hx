@@ -84,16 +84,37 @@ class Main extends Sprite
 		updateMatchList();
 	}
 
+	function readDirectory(directory:String):Array<String>
+	{
+		var array = FileSystem.readDirectory(directory);
+		array.sort(function(x:String, y:String):Int
+		{
+			if (x < y)
+			{
+				return -1;
+			}
+			else if (x > y)
+			{
+				return 1;
+			}
+			else
+			{
+				return 0;
+			}
+		});
+		return array;
+	}
+
 	function updateMatchList()
 	{
 		try
 		{
-			var matches = FileSystem.readDirectory(config.matchDirectory);
+			var matches = readDirectory(config.matchDirectory);
 
 			for (match in matches)
 			{
-				var rounds = FileSystem.readDirectory(config.matchDirectory + "/" + match);
-				var players = FileSystem.readDirectory(config.matchDirectory + "/" + match + "/Round " + pad(rounds.length - 1));
+				var rounds = readDirectory(config.matchDirectory + "/" + match);
+				var players = readDirectory(config.matchDirectory + "/" + match + "/Round " + pad(rounds.length - 1));
 				var map = Json.parse(File.getContent(config.matchDirectory + "/" + match + "/Round " + pad(rounds.length-1) + "/"+players[0]+"/JsonMap.json"));
 				//trace(map.players);
 				var btn = new Button(players[0].substring(4)+":"+map.players[0].score+"\n"+players[1].substring(4)+":"+map.players[1].score+"\nRounds " + rounds.length, function(e:Dynamic)
@@ -129,13 +150,13 @@ class Main extends Sprite
 	{
 		try
 		{
-			var rounds = FileSystem.readDirectory(directory);
+			var rounds = readDirectory(directory);
 			roundList.removeAll();
 			for (round in rounds)
 			{
-				var players = FileSystem.readDirectory(directory + "/" + round);
+				var players = readDirectory(directory + "/" + round);
 				var roundData = Json.parse(File.getContent(directory + "/" + round + "/"+players[0]+"/JsonMap.json"));
-				var playerCommand = File.getContent(directory + "/" + round + "/"+players[0]+"/playerCommand.txt");
+				var playerCommand = File.getContent(directory + "/" + round + "/"+players[0]+"/PlayerCommand.txt");
 				var dark = 0x0;
 				var light = 0xdddddd;
 				var commandText = "";
@@ -171,7 +192,7 @@ class Main extends Sprite
 		{
 			var buildingSize:Int = 64;
 			var spacingSize:Int = 4;
-			var players = FileSystem.readDirectory(directory);
+			var players = readDirectory(directory);
 			var map = Json.parse(File.getContent(directory + "/"+players[0]+"/JsonMap.json"));
 
 			if (gameDetails == null)
