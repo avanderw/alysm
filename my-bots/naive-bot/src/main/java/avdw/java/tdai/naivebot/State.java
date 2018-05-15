@@ -13,8 +13,6 @@ import java.nio.file.Paths;
 public class State {
     public static GameState read(String statePath) {
         String state = null;
-        File file = new File(statePath);
-        System.out.println(file.getAbsolutePath());
         try {
             state = new String(Files.readAllBytes(Paths.get(statePath)));
         } catch (IOException e) {

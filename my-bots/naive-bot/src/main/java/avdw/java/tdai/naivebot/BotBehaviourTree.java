@@ -25,7 +25,7 @@ public class BotBehaviourTree {
     public String run(){
         BotResponse botResponse = new BotResponse();
         ABehaviourTree behaviourTree = new ABehaviourTree.Selector();
-        behaviourTree.add(new ABehaviourTree.Sequence(new EnergyLessThanOpposition(gameState), new BuildEnergyBuilding(botResponse)));
+        behaviourTree.add(new ABehaviourTree.Sequence(new EnergyGenerationLessThanOpposition(gameState), new BuildEnergyBuilding(botResponse)));
         behaviourTree.add(new DoNothing(botResponse));
         behaviourTree.process();
 
