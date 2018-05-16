@@ -1,6 +1,10 @@
 package avdw.java.tdai.naivebot;
 
-public class BuildEnergyBuilding extends ABehaviourTree {
+import avdw.java.tdai.naivebot.entities.GameState;
+import avdw.java.tdai.naivebot.enums.BuildingType;
+import avdw.java.tdai.naivebot.enums.PlayerType;
+
+public class BuildEnergyBuilding extends ABehaviourTree<GameState> {
     private BotResponse botResponse;
 
     public BuildEnergyBuilding(BotResponse botResponse) {
@@ -9,7 +13,12 @@ public class BuildEnergyBuilding extends ABehaviourTree {
     }
 
     @Override
-    public Status process() {
-        return null;
+    public Status process(GameState state) {
+        if (state.getEnergyFor(PlayerType.A) < state.getBuildingPrice(BuildingType.ENERGY)) {
+            return Status.Failure;
+        } else {
+
+            return Status.Success;
+        }
     }
 }

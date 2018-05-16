@@ -24,10 +24,40 @@ public class BotBehaviourTree {
 
     public String run(){
         BotResponse botResponse = new BotResponse();
-        ABehaviourTree behaviourTree = new ABehaviourTree.Selector();
-        behaviourTree.add(new ABehaviourTree.Sequence(new EnergyGenerationLessThanOpposition(gameState), new BuildEnergyBuilding(botResponse)));
-        behaviourTree.add(new DoNothing(botResponse));
-        behaviourTree.process();
+
+        ABehaviourTree buildEnergyBuilding = new ABehaviourTree.Sequence();
+        buildEnergyBuilding.add();
+
+        ABehaviourTree behaviourTree = new ABehaviourTree.Selector(
+                new ABehaviourTree.Sequence(
+                        new EnergyGeneration(Predicate.LESS_THAN, gameState.getEnergyGenerationFor(PlayerType.B)),
+                        new EnergyGeneration(Predicate.LESS_THAN, gameState.getMostExpensiveBuildingPrice()),
+                        new CanAfford(BuildingType.ENERGY),
+                        new ABehaviourTree.Selector(
+                                new Build(BuildingType.ENERGY, MyLane.DEFENDING, TheirLane.EMPTY),
+                                new Build(BuildingType.ENERGY, MyLane.DEFENDING, TheirLane.ONLY_ENERGY),
+                                new Build(BuildingType.ENERGY, MyLane.EMPTY, TheirLane.EMPTY),
+                                new Build(BuildingType.ENERGY, MyLane.DEFENDING, TheirLane.NOT_ATTACKING)),
+                new ABehaviourTree.Sequence(
+                        new CanAfford(BuildingType.ATTACK),
+                        new ABehaviourTree.Selector(
+                                new Build(BuildingType.ATTACK, MyLane.DEFENDING, TheirLane.ONLY_ENERGY),
+                                new Build(BuildingType.ATTACK, MyLand.DEFENDING, TheirLane.EMPTY),
+                                new Build(BuildingType.ATTACK, MyLane.DEFENDING, TheirLane.NOT_DEFENDING),
+                                new Build(BuildingType.ATTACK, MyLane.ATTACKING, TheirLane.ONLY_ENERGY),
+                                new Build(BuildingType.ATTACK, MyLane.ATTACKING, TheirLane.EMPTY),
+                                new Build(BuildingType.ATTACK, MyLane.ATTACKING, TheirLane.NOT_DEFENDING))),
+                new ABehaviourTree.Sequence(
+                        new CanAfford(BuildingType.DEFENSE),
+                        new ABehaviourTree.Selector(
+                                new Build(BuildingType.DEFENSE, MyLane.ONLY_ENERGY, TheirLane.ATTACKING),
+                                new Build(BuildingType.DEFENSE, MyLane.ONLY_ATTACKING, TheirLane.ATTACKING),
+                                new Build(BuildingType.DEFENSE, MyLane.ONLY_ENERGY, TheirLane.NOT_ATTACKING),
+                                new Build(BuildingType.DEFENSE, MyLane.ONLY_ATTACKING, TheirLane.NOT_ATTACKING),
+                                new Build(BuildingType.DEFENSE, MyLane.ONLY_ENERGY, TheirLane.EMPTY),
+                                new Build(BuildingType.DEFENSE, MyLane.ONLY_ATTACKING, TheirLane.EMPTY))),
+                new DoNothing()));
+        behaviourTree.process(gameState);
 
         //return botResponse.response;
 
@@ -73,7 +103,7 @@ public class BotBehaviourTree {
 
         //if i don't need to do anything then do either attack or defend randomly based on chance (65% attack, 35% defense)
         if (command.equals("")){
-            if (gameState.getEnergyFor(PlayerType.A) >= getMostExpensiveBuildingPrice()){
+            if (gameState.getEnergyFor(PlayerType.A) >= gameState.getMostExpensiveBuildingPrice()){
                 if (rand.nextInt(100) <= 35){
                     return placeBuildingRandomlyFromFront(BuildingType.DEFENSE);
                 }else{
@@ -163,18 +193,5 @@ public class BotBehaviourTree {
 
     private int getPriceForBuilding(BuildingType buildingType){
         return gameState.gameDetails.buildingPrices.get(buildingType);
-    }
-
-    private int getMostExpensiveBuildingPrice(){
-        int buildingPrice = 0;
-        for (Integer value : gameState.gameDetails.buildingPrices.values()){
-            if (buildingPrice == 0){
-                buildingPrice = value;
-            }
-            if (value > buildingPrice){
-                buildingPrice = value;
-            }
-        }
-        return buildingPrice;
     }
 }

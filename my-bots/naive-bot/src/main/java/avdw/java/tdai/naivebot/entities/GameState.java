@@ -1,6 +1,7 @@
 package avdw.java.tdai.naivebot.entities;
 
 import avdw.java.tdai.naivebot.BotBehaviourTree;
+import avdw.java.tdai.naivebot.enums.BuildingType;
 import avdw.java.tdai.naivebot.enums.PlayerType;
 
 import java.util.ArrayList;
@@ -33,5 +34,29 @@ public class GameState {
                 .filter(p -> p.playerType == playerType)
                 .mapToInt(p -> p.energy)
                 .sum();
+    }
+
+    public int getEnergyGenerationFor(PlayerType playerType) {
+        return getGameMap().stream()
+                .filter(cell-> cell.cellOwner == playerType)
+                .map(cell->cell.buildings.stream().findFirst())
+                .filter(building->building.isPresent())
+                .filter(building->building.get().buildingType == BuildingType.ENERGY)
+                .mapToInt(building->building.get().energyGeneratedPerTurn)
+                .sum();
+    }
+
+    public int getBuildingPrice(BuildingType buildingType) {
+        return gameDetails.buildingPrices.get(buildingType);
+    }
+
+    public int getMostExpensiveBuildingPrice(){
+        int buildingPrice = 0;
+        for (Integer value : gameDetails.buildingPrices.values()){
+            if (value > buildingPrice){
+                buildingPrice = value;
+            }
+        }
+        return buildingPrice;
     }
 }

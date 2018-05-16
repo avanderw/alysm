@@ -1,11 +1,12 @@
 package avdw.java.tdai.naivebot;
 
+import avdw.java.tdai.naivebot.entities.GameState;
 import org.pmw.tinylog.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ABehaviourTree {
+public abstract class ABehaviourTree<S> {
 
     List<ABehaviourTree> children = new ArrayList();
 
@@ -23,7 +24,7 @@ public abstract class ABehaviourTree {
         }
     }
 
-    public abstract Status process();
+    public abstract Status process(S state);
 
     /**
      * Fallback nodes are used to find and execute the first child that does not
@@ -33,7 +34,7 @@ public abstract class ABehaviourTree {
      *
      * @author Andrew van der Westhuizen
      */
-    public static class Selector extends ABehaviourTree {
+    public static class Selector<S> extends ABehaviourTree<S> {
 
         public Selector() {
         }
@@ -43,10 +44,10 @@ public abstract class ABehaviourTree {
         }
 
         @Override
-        public Status process() {
+        public Status process(S state) {
             Logger.debug(this);
             for (ABehaviourTree child : children) {
-                Status status = child.process();
+                Status status = child.process(state);
                 switch (status) {
                     case Running:
                     case Success:
@@ -66,7 +67,7 @@ public abstract class ABehaviourTree {
      *
      * @author Andrew van der Westhuizen
      */
-    public static class Sequence extends ABehaviourTree {
+    public static class Sequence<S> extends ABehaviourTree<S> {
 
         public Sequence() {
         }
@@ -76,10 +77,10 @@ public abstract class ABehaviourTree {
         }
 
         @Override
-        public Status process() {
+        public Status process(S state) {
             Logger.debug(this);
             for (ABehaviourTree child : children) {
-                Status status = child.process();
+                Status status = child.process(state);
                 switch (status) {
                     case Running:
                     case Failure:
@@ -96,22 +97,22 @@ public abstract class ABehaviourTree {
      *
      * @author Andrew van der Westhuizen
      */
-    public static class UntilFail extends ABehaviourTree {
+    public static class UntilFail<S> extends ABehaviourTree<S> {
 
         public UntilFail() {
         }
 
-        public UntilFail(ABehaviourTree child) {
+        public UntilFail(ABehaviourTree<S> child) {
             super(child);
         }
 
         @Override
-        public Status process() {
+        public Status process(S state) {
             if (children.size() != 1) {
                 throw new AssertionError(children);
             }
 
-            Status status = children.get(0).process();
+            Status status = children.get(0).process(state);
             switch (status) {
                 case Running:
                 case Success:

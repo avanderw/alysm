@@ -1,17 +1,11 @@
 package avdw.java.tdai.naivebot;
 
-class DoNothing extends ABehaviourTree {
-    private BotResponse botResponse;
+import avdw.java.tdai.naivebot.entities.GameState;
 
-    public DoNothing(BotResponse botResponse) {
-        super();
-
-        this.botResponse = botResponse;
-    }
+class DoNothing extends ABehaviourTree<GameState> {
 
     @Override
-    public Status process() {
-        botResponse.doNothing();
+    public Status process(GameState state) {
 
         return Status.Success;
     }
