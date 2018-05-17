@@ -4,7 +4,7 @@ import avdw.java.tdai.naivebot.entities.Building;
 import avdw.java.tdai.naivebot.entities.CellStateContainer;
 import avdw.java.tdai.naivebot.entities.GameState;
 import avdw.java.tdai.naivebot.enums.BuildingType;
-import avdw.java.tdai.naivebot.enums.PlayerType;
+import avdw.java.tdai.naivebot.enums.*;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -30,8 +30,8 @@ public class BotBehaviourTree {
 
         ABehaviourTree behaviourTree = new ABehaviourTree.Selector(
                 new ABehaviourTree.Sequence(
-                        new EnergyGeneration(Predicate.LESS_THAN, gameState.getEnergyGenerationFor(PlayerType.B)),
-                        new EnergyGeneration(Predicate.LESS_THAN, gameState.getMostExpensiveBuildingPrice()),
+                        new EnergyGeneration(Operation.LESS_THAN, gameState.getEnergyGenerationFor(PlayerType.B)),
+                        new EnergyGeneration(Operation.LESS_THAN, gameState.getMostExpensiveBuildingPrice()),
                         new CanAfford(BuildingType.ENERGY),
                         new ABehaviourTree.Selector(
                                 new Build(BuildingType.ENERGY, MyLane.DEFENDING, TheirLane.EMPTY),
@@ -42,7 +42,7 @@ public class BotBehaviourTree {
                         new CanAfford(BuildingType.ATTACK),
                         new ABehaviourTree.Selector(
                                 new Build(BuildingType.ATTACK, MyLane.DEFENDING, TheirLane.ONLY_ENERGY),
-                                new Build(BuildingType.ATTACK, MyLand.DEFENDING, TheirLane.EMPTY),
+                                new Build(BuildingType.ATTACK, MyLane.DEFENDING, TheirLane.EMPTY),
                                 new Build(BuildingType.ATTACK, MyLane.DEFENDING, TheirLane.NOT_DEFENDING),
                                 new Build(BuildingType.ATTACK, MyLane.ATTACKING, TheirLane.ONLY_ENERGY),
                                 new Build(BuildingType.ATTACK, MyLane.ATTACKING, TheirLane.EMPTY),
@@ -69,7 +69,7 @@ public class BotBehaviourTree {
             int myDefenseOnRow = getAllBuildingsForPlayer(PlayerType.A, b -> b.buildingType == BuildingType.DEFENSE, i).size();
 
             if (enemyAttackOnRow > 0 && myDefenseOnRow == 0){
-                if ( canAffordBuilding(BuildingType.DEFENSE))
+                if ( gameState.getEnergyFor(PlayerType.A) > gameState.getBuildingPrice(BuildingType.DEFENSE))
                     command = placeBuildingInRowFromFront(BuildingType.DEFENSE, i);
                 else
                     command = "";
@@ -84,7 +84,7 @@ public class BotBehaviourTree {
                 int myEnergyOnRow = getAllBuildingsForPlayer(PlayerType.A, b -> b.buildingType == BuildingType.ENERGY, i).size();
 
                 if (enemyAttackOnRow == 0 && myEnergyOnRow == 0 ) {
-                    if (canAffordBuilding(BuildingType.ENERGY))
+                    if (gameState.getEnergyFor(PlayerType.A) > gameState.getBuildingPrice(BuildingType.ENERGY))
                         command = placeBuildingInRowFromBack(BuildingType.ENERGY, i);
                     break;
                 }
@@ -95,7 +95,7 @@ public class BotBehaviourTree {
         if (command.equals("")){
             for (int i = 0; i < gameState.gameDetails.mapHeight; i++) {
                 if ( getAllBuildingsForPlayer(PlayerType.A, b -> b.buildingType == BuildingType.DEFENSE, i).size() > 0
-                        && canAffordBuilding(BuildingType.ATTACK)){
+                        && gameState.getEnergyFor(PlayerType.A) > gameState.getBuildingPrice(BuildingType.ATTACK)){
                     command = placeBuildingInRowFromFront(BuildingType.ATTACK, i);
                 }
             }
@@ -185,13 +185,5 @@ public class BotBehaviourTree {
             System.out.println("Invalid cell selected");
         }
         return true;
-    }
-
-    private boolean canAffordBuilding(BuildingType buildingType){
-        return gameState.getEnergyFor(PlayerType.A) >= getPriceForBuilding(buildingType);
-    }
-
-    private int getPriceForBuilding(BuildingType buildingType){
-        return gameState.gameDetails.buildingPrices.get(buildingType);
     }
 }

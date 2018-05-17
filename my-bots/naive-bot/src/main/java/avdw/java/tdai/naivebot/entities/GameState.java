@@ -37,7 +37,7 @@ public class GameState {
     }
 
     public int getEnergyGenerationFor(PlayerType playerType) {
-        return getGameMap().stream()
+        return gameDetails.roundIncomeEnergy + getGameMap().stream()
                 .filter(cell-> cell.cellOwner == playerType)
                 .map(cell->cell.buildings.stream().findFirst())
                 .filter(building->building.isPresent())
