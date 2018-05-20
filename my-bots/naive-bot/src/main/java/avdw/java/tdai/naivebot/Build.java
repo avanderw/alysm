@@ -2,20 +2,23 @@ package avdw.java.tdai.naivebot;
 
 import avdw.java.tdai.naivebot.entities.CellStateContainer;
 import avdw.java.tdai.naivebot.entities.GameState;
+import avdw.java.tdai.naivebot.entities.Player;
 import avdw.java.tdai.naivebot.enums.BuildingType;
-import avdw.java.tdai.naivebot.enums.MyLane;
 import avdw.java.tdai.naivebot.enums.PlayerType;
-import avdw.java.tdai.naivebot.enums.TheirLane;
+import avdw.java.tdai.naivebot.enums.LaneType;
 
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Build extends ABehaviourTree<GameState> {
-    private BuildingType buildingType;
-    private MyLane myLane;
-    private TheirLane theirLane;
+    private final BuildingType buildingType;
+    private final LaneType myLane;
+    private final LaneType theirLane;
 
-    public Build(BuildingType buildingType, MyLane myLane, TheirLane theirLane) {
+    public Build(BuildingType buildingType, LaneType myLane, LaneType theirLane) {
 
         this.buildingType = buildingType;
         this.myLane = myLane;
@@ -29,39 +32,88 @@ public class Build extends ABehaviourTree<GameState> {
         }
 
         if (!isSpaceToBuild(state)) return Status.Failure;
-        if (!isMyLaneValid(state, myLane)) return Status.Failure;
-        if (!isTheirLaneValid(state, theirLane)) return Status.Failure;
 
-        return Status.Failure;
+        Set<Integer> myLanes = selectLanesForPlayer(state, PlayerType.A, myLane);
+        if (myLanes.isEmpty()) {
+            return Status.Failure;
+        }
+
+        Set<Integer> theirLanes = selectLanesForPlayer(state, PlayerType.B, theirLane);
+        if (theirLanes.isEmpty()) {
+            return Status.Failure;
+        }
+
+        Set<Integer> unionLanes = new HashSet(myLanes);
+        unionLanes.retainAll(theirLanes);
+        if (unionLanes.isEmpty()) {
+            return Status.Failure;
+        }
+
+        Integer lane = unionLanes.iterator().next();
+        List<CellStateContainer> cells = state.getGameMap().stream()
+                .filter(cell -> cell.y == lane)
+                .filter(cell -> cell.cellOwner == PlayerType.A)
+                .filter(cell -> cell.getBuildings().isEmpty())
+                .collect(Collectors.toList());
+
+        if (cells.isEmpty()) {
+            throw new RuntimeException("this should not be possible");
+        }
+
+        CellStateContainer cell;
+        if (buildingType != BuildingType.DEFENSE) {
+            cell = cells.stream().min(Comparator.comparingInt(c -> c.x)).get();
+        } else {
+            cell = cells.stream().max(Comparator.comparingInt(c -> c.x)).get();
+        }
+
+        Main.command = buildCommand(cell.x, cell.y, buildingType);
+        return Status.Success;
     }
 
-    private boolean isMyLaneValid(GameState state, MyLane myLane) {
-        BuildingType buildingToCheckFor = null;
-        switch (myLane) {
-            case DEFENDING:
-                return state.getGameMap().stream()
-                        .filter(cell -> cell.cellOwner == PlayerType.A)
-                        .filter(cell -> !cell.getBuildings().isEmpty())
-                        .filter(cell -> cell.getBuildings().stream().anyMatch(building -> building.buildingType == BuildingType.DEFENSE))
-                        .count() > 0;
-            case ATTACKING:
-                List<CellStateContainer> attackBuildings = state.getGameMap().stream()
-                        .filter(cell -> cell.cellOwner == PlayerType.A)
-                        .filter(cell -> !cell.getBuildings().isEmpty())
-                        .filter(cell -> cell.getBuildings().stream().anyMatch(building -> building.buildingType == BuildingType.ATTACK))
-                        .collect(Collectors.toList());
-                if (attackBuildings.isEmpty()) {
-                    return false;
-                }
-
-                
-            case ONLY_ENERGY:
-            case ONLY_ATTACKING:
+    private Set<Integer> selectLanesForPlayer(GameState state, PlayerType playerType, LaneType laneType) {
+        Set<Integer> lanes = new HashSet();
+        switch (laneType) {
             case EMPTY:
-                return true;
-            default:
-                return false;
+                lanes.addAll(selectLanes(state, playerType, BuildingType.EMPTY));
+                lanes.removeAll(selectLanes(state, playerType, BuildingType.DEFENSE));
+                lanes.removeAll(selectLanes(state, playerType, BuildingType.ATTACK));
+                lanes.removeAll(selectLanes(state, playerType, BuildingType.ENERGY));
+                break;
+            case ATTACKING:
+                lanes.addAll(selectLanes(state, playerType, BuildingType.ATTACK));
+                lanes.retainAll(selectLanes(state, playerType, BuildingType.EMPTY));
+                break;
+            case NOT_ATTACKING:
+                break;
+            case DEFENDING:
+                lanes.addAll(selectLanes(state, playerType, BuildingType.DEFENSE));
+                lanes.retainAll(selectLanes(state, playerType, BuildingType.EMPTY));
+                break;
+            case NOT_DEFENDING:
+                break;
+            case ONLY_ENERGY:
+                lanes.addAll(selectLanes(state, playerType, BuildingType.ENERGY));
+                lanes.removeAll(selectLanes(state, playerType, BuildingType.DEFENSE));
+                lanes.removeAll(selectLanes(state, playerType, BuildingType.ATTACK));
+                break;
+            case ONLY_ATTACKING:
+                lanes.addAll(selectLanes(state, playerType, BuildingType.ATTACK));
+                lanes.removeAll(selectLanes(state, playerType, BuildingType.DEFENSE));
+                lanes.removeAll(selectLanes(state, playerType, BuildingType.ENERGY));
+                break;
         }
+
+        return lanes;
+    }
+
+    private List<Integer> selectLanes(GameState state, PlayerType playerType, BuildingType buildingType) {
+        return state.getGameMap().stream()
+                .filter(cell -> cell.cellOwner == playerType)
+                .filter(cell -> cell.getBuildings().isEmpty() == (buildingType == BuildingType.EMPTY))
+                .filter(cell -> cell.getBuildings().stream().anyMatch(building -> building.buildingType == buildingType))
+                .map(cell -> cell.y)
+                .collect(Collectors.toList());
     }
 
     private boolean isSpaceToBuild(GameState state) {
@@ -72,4 +124,9 @@ public class Build extends ABehaviourTree<GameState> {
 
         return (numEmptyCells != 0);
     }
+
+    private String buildCommand(int x, int y, BuildingType buildingType) {
+        return String.format("%s,%d,%s", String.valueOf(x), y, buildingType.getCommandCode());
+    }
+
 }

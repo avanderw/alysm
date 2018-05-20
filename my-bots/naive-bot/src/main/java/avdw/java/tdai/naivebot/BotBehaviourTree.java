@@ -22,8 +22,7 @@ public class BotBehaviourTree {
         gameState.getGameMap();
     }
 
-    public String run(){
-        BotResponse botResponse = new BotResponse();
+    public void run(){
 
         ABehaviourTree buildEnergyBuilding = new ABehaviourTree.Sequence();
         buildEnergyBuilding.add();
@@ -34,130 +33,39 @@ public class BotBehaviourTree {
                         new EnergyGeneration(Operation.LESS_THAN, gameState.getMostExpensiveBuildingPrice()),
                         new CanAfford(BuildingType.ENERGY),
                         new ABehaviourTree.Selector(
-                                new Build(BuildingType.ENERGY, MyLane.DEFENDING, TheirLane.EMPTY),
-                                new Build(BuildingType.ENERGY, MyLane.DEFENDING, TheirLane.ONLY_ENERGY),
-                                new Build(BuildingType.ENERGY, MyLane.EMPTY, TheirLane.EMPTY),
-                                new Build(BuildingType.ENERGY, MyLane.DEFENDING, TheirLane.NOT_ATTACKING)),
+                                new Build(BuildingType.ENERGY, LaneType.DEFENDING, LaneType.EMPTY),
+                                new Build(BuildingType.ENERGY, LaneType.DEFENDING, LaneType.ONLY_ENERGY),
+                                new Build(BuildingType.ENERGY, LaneType.EMPTY, LaneType.EMPTY),
+                                new Build(BuildingType.ENERGY, LaneType.DEFENDING, LaneType.NOT_ATTACKING)),
                 new ABehaviourTree.Sequence(
                         new CanAfford(BuildingType.ATTACK),
                         new ABehaviourTree.Selector(
-                                new Build(BuildingType.ATTACK, MyLane.DEFENDING, TheirLane.ONLY_ENERGY),
-                                new Build(BuildingType.ATTACK, MyLane.DEFENDING, TheirLane.EMPTY),
-                                new Build(BuildingType.ATTACK, MyLane.DEFENDING, TheirLane.NOT_DEFENDING),
-                                new Build(BuildingType.ATTACK, MyLane.ATTACKING, TheirLane.ONLY_ENERGY),
-                                new Build(BuildingType.ATTACK, MyLane.ATTACKING, TheirLane.EMPTY),
-                                new Build(BuildingType.ATTACK, MyLane.ATTACKING, TheirLane.NOT_DEFENDING))),
+                                new Build(BuildingType.ATTACK, LaneType.DEFENDING, LaneType.ONLY_ENERGY),
+                                new Build(BuildingType.ATTACK, LaneType.DEFENDING, LaneType.EMPTY),
+                                new Build(BuildingType.ATTACK, LaneType.DEFENDING, LaneType.NOT_DEFENDING),
+                                new Build(BuildingType.ATTACK, LaneType.ATTACKING, LaneType.ONLY_ENERGY),
+                                new Build(BuildingType.ATTACK, LaneType.ATTACKING, LaneType.EMPTY),
+                                new Build(BuildingType.ATTACK, LaneType.ATTACKING, LaneType.NOT_DEFENDING))),
                 new ABehaviourTree.Sequence(
                         new CanAfford(BuildingType.DEFENSE),
                         new ABehaviourTree.Selector(
-                                new Build(BuildingType.DEFENSE, MyLane.ONLY_ENERGY, TheirLane.ATTACKING),
-                                new Build(BuildingType.DEFENSE, MyLane.ONLY_ATTACKING, TheirLane.ATTACKING),
-                                new Build(BuildingType.DEFENSE, MyLane.ONLY_ENERGY, TheirLane.NOT_ATTACKING),
-                                new Build(BuildingType.DEFENSE, MyLane.ONLY_ATTACKING, TheirLane.NOT_ATTACKING),
-                                new Build(BuildingType.DEFENSE, MyLane.ONLY_ENERGY, TheirLane.EMPTY),
-                                new Build(BuildingType.DEFENSE, MyLane.ONLY_ATTACKING, TheirLane.EMPTY))),
+                                new Build(BuildingType.DEFENSE, LaneType.ONLY_ENERGY, LaneType.ATTACKING),
+                                new Build(BuildingType.DEFENSE, LaneType.ONLY_ATTACKING, LaneType.ATTACKING),
+                                new Build(BuildingType.DEFENSE, LaneType.ONLY_ENERGY, LaneType.NOT_ATTACKING),
+                                new Build(BuildingType.DEFENSE, LaneType.ONLY_ATTACKING, LaneType.NOT_ATTACKING),
+                                new Build(BuildingType.DEFENSE, LaneType.ONLY_ENERGY, LaneType.EMPTY),
+                                new Build(BuildingType.DEFENSE, LaneType.ONLY_ATTACKING, LaneType.EMPTY))),
                 new DoNothing()));
         behaviourTree.process(gameState);
 
-        //return botResponse.response;
-
-        String command = "";
 
         //if enemy has an attack building and i dont have a blocking wall, then block from front
-        for (int i = 0; i < gameState.gameDetails.mapHeight; i++){
-            int enemyAttackOnRow = getAllBuildingsForPlayer(PlayerType.B, b -> b.buildingType == BuildingType.ATTACK, i).size();
-            int myDefenseOnRow = getAllBuildingsForPlayer(PlayerType.A, b -> b.buildingType == BuildingType.DEFENSE, i).size();
-
-            if (enemyAttackOnRow > 0 && myDefenseOnRow == 0){
-                if ( gameState.getEnergyFor(PlayerType.A) > gameState.getBuildingPrice(BuildingType.DEFENSE))
-                    command = placeBuildingInRowFromFront(BuildingType.DEFENSE, i);
-                else
-                    command = "";
-                break;
-            }
-        }
-
         //if there is a row where i don't have energy and there is no enemy attack build energy in the back row
-        if (command.equals("")) {
-            for (int i = 0; i < gameState.gameDetails.mapHeight; i++) {
-                int enemyAttackOnRow = getAllBuildingsForPlayer(PlayerType.B, b -> b.buildingType == BuildingType.ATTACK, i).size();
-                int myEnergyOnRow = getAllBuildingsForPlayer(PlayerType.A, b -> b.buildingType == BuildingType.ENERGY, i).size();
-
-                if (enemyAttackOnRow == 0 && myEnergyOnRow == 0 ) {
-                    if (gameState.getEnergyFor(PlayerType.A) > gameState.getBuildingPrice(BuildingType.ENERGY))
-                        command = placeBuildingInRowFromBack(BuildingType.ENERGY, i);
-                    break;
-                }
-            }
-        }
-
         //if i have a defense building on a row, then build an attack building behind it.
-        if (command.equals("")){
-            for (int i = 0; i < gameState.gameDetails.mapHeight; i++) {
-                if ( getAllBuildingsForPlayer(PlayerType.A, b -> b.buildingType == BuildingType.DEFENSE, i).size() > 0
-                        && gameState.getEnergyFor(PlayerType.A) > gameState.getBuildingPrice(BuildingType.ATTACK)){
-                    command = placeBuildingInRowFromFront(BuildingType.ATTACK, i);
-                }
-            }
-        }
-
         //if i don't need to do anything then do either attack or defend randomly based on chance (65% attack, 35% defense)
-        if (command.equals("")){
-            if (gameState.getEnergyFor(PlayerType.A) >= gameState.getMostExpensiveBuildingPrice()){
-                if (rand.nextInt(100) <= 35){
-                    return placeBuildingRandomlyFromFront(BuildingType.DEFENSE);
-                }else{
-                    return placeBuildingRandomlyFromBack(BuildingType.ATTACK);
-                }
-            }
-        }
-
-        return command;
     }
 
-    private String placeBuildingRandomlyFromBack(BuildingType buildingType){
-        for (int i = 0; i < gameState.gameDetails.mapWidth/ 2; i ++){
-            List<CellStateContainer> listOfFreeCells = getListOfEmptyCellsForColumn(i);
-            if (listOfFreeCells.size() != 0){
-                CellStateContainer pickedCell = listOfFreeCells.get(rand.nextInt(listOfFreeCells.size()));
-                return buildCommand(pickedCell.x, pickedCell.y, buildingType);
-            }
-        }
-        return "";
-    }
 
-    private String placeBuildingRandomlyFromFront(BuildingType buildingType){
-        for (int i = (gameState.gameDetails.mapWidth / 2) - 1; i >= 0; i--){
-            List<CellStateContainer> listOfFreeCells = getListOfEmptyCellsForColumn(i);
-            if (listOfFreeCells.size() != 0){
-                CellStateContainer pickedCell = listOfFreeCells.get(rand.nextInt(listOfFreeCells.size()));
-                return buildCommand(pickedCell.x, pickedCell.y, buildingType);
-            }
-        }
-        return "";
-    }
-
-    private String placeBuildingInRowFromFront(BuildingType buildingType, int y){
-        for (int i = (gameState.gameDetails.mapWidth / 2) - 1; i >= 0; i--){
-            if (isCellEmpty(i, y)){
-                return buildCommand(i, y, buildingType);
-            }
-        }
-        return "";
-    }
-
-    private String placeBuildingInRowFromBack(BuildingType buildingType, int y){
-        for (int i = 0; i < gameState.gameDetails.mapWidth / 2; i++){
-            if (isCellEmpty(i, y)){
-                return buildCommand(i, y, buildingType);
-            }
-        }
-        return "";
-    }
-
-    private String buildCommand(int x, int y, BuildingType buildingType){
-        return String.format("%s,%d,%s", String.valueOf(x), y, buildingType.getCommandCode());
-    }
 
     private List<Building> getAllBuildingsForPlayer(PlayerType playerType, Predicate<Building> filter, int y){
         return gameState.getGameMap().stream()
