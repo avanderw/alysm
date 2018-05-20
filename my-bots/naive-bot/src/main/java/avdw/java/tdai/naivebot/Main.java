@@ -13,12 +13,10 @@ public class Main {
 
     public static void main(String[] args) {
         BotBehaviourTree botBehaviourTree = new BotBehaviourTree(State.read(STATE_FILE_NAME));
-        botBehaviourTree.run();
-        writeBotResponseToFile();
+        writeBotResponseToFile(botBehaviourTree.run());
     }
 
-    static String command = "";
-    private static void writeBotResponseToFile() {
+    private static void writeBotResponseToFile(String command) {
         try {
             Files.write(Paths.get(COMMAND_FILE_NAME), command.getBytes());
         } catch (IOException e) {

@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GameState {
+    public String command = "";
     public GameDetails gameDetails;
     protected Player[] players;
     protected CellStateContainer[][] gameMap;

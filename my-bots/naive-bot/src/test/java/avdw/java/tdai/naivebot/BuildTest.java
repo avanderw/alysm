@@ -1,5 +1,6 @@
 package avdw.java.tdai.naivebot;
 
+import avdw.java.tdai.naivebot.entities.GameState;
 import avdw.java.tdai.naivebot.enums.BuildingType;
 import avdw.java.tdai.naivebot.enums.MyLane;
 import avdw.java.tdai.naivebot.enums.LaneType;
@@ -95,5 +96,15 @@ class BuildTest {
         Build build = new Build(BuildingType.ATTACK, LaneType.ONLY_ATTACKING, LaneType.ATTACKING);
         assertEquals(ABehaviourTree.Status.Success, build.process(State.read("./src/test/resources/theirlane-attacking.json")));
         assertEquals(ABehaviourTree.Status.Failure, build.process(State.read("./src/test/resources/theirlane-no-attacking.json")));
+    }
+
+    @Test
+    void buildEnergyEmptyEmpty() {
+        Build build = new Build(BuildingType.ENERGY, LaneType.EMPTY, LaneType.EMPTY);
+        GameState state =State.read("./src/test/resources/energy-empty-empty.json");
+        ABehaviourTree.Status status = build.process(state);
+
+        assertEquals(ABehaviourTree.Status.Success, status);
+        assertNotEquals("", state.command);
     }
 }

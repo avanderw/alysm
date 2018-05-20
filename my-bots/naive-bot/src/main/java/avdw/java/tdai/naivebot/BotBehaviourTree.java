@@ -19,13 +19,9 @@ public class BotBehaviourTree {
 
     public BotBehaviourTree(GameState gameState){
         this.gameState = gameState;
-        gameState.getGameMap();
     }
 
-    public void run(){
-
-        ABehaviourTree buildEnergyBuilding = new ABehaviourTree.Sequence();
-        buildEnergyBuilding.add();
+    public String run(){
 
         ABehaviourTree behaviourTree = new ABehaviourTree.Selector(
                 new ABehaviourTree.Sequence(
@@ -36,7 +32,7 @@ public class BotBehaviourTree {
                                 new Build(BuildingType.ENERGY, LaneType.DEFENDING, LaneType.EMPTY),
                                 new Build(BuildingType.ENERGY, LaneType.DEFENDING, LaneType.ONLY_ENERGY),
                                 new Build(BuildingType.ENERGY, LaneType.EMPTY, LaneType.EMPTY),
-                                new Build(BuildingType.ENERGY, LaneType.DEFENDING, LaneType.NOT_ATTACKING)),
+                                new Build(BuildingType.ENERGY, LaneType.DEFENDING, LaneType.NOT_ATTACKING))),
                 new ABehaviourTree.Sequence(
                         new CanAfford(BuildingType.ATTACK),
                         new ABehaviourTree.Selector(
@@ -55,9 +51,10 @@ public class BotBehaviourTree {
                                 new Build(BuildingType.DEFENSE, LaneType.ONLY_ATTACKING, LaneType.NOT_ATTACKING),
                                 new Build(BuildingType.DEFENSE, LaneType.ONLY_ENERGY, LaneType.EMPTY),
                                 new Build(BuildingType.DEFENSE, LaneType.ONLY_ATTACKING, LaneType.EMPTY))),
-                new DoNothing()));
+                new DoNothing());
         behaviourTree.process(gameState);
 
+        return gameState.command;
 
         //if enemy has an attack building and i dont have a blocking wall, then block from front
         //if there is a row where i don't have energy and there is no enemy attack build energy in the back row

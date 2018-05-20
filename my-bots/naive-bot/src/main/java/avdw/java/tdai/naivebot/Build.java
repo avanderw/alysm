@@ -67,7 +67,7 @@ public class Build extends ABehaviourTree<GameState> {
             cell = cells.stream().max(Comparator.comparingInt(c -> c.x)).get();
         }
 
-        Main.command = buildCommand(cell.x, cell.y, buildingType);
+        state.command = buildCommand(cell.x, cell.y, buildingType);
         return Status.Success;
     }
 
@@ -111,7 +111,7 @@ public class Build extends ABehaviourTree<GameState> {
         return state.getGameMap().stream()
                 .filter(cell -> cell.cellOwner == playerType)
                 .filter(cell -> cell.getBuildings().isEmpty() == (buildingType == BuildingType.EMPTY))
-                .filter(cell -> cell.getBuildings().stream().anyMatch(building -> building.buildingType == buildingType))
+                .filter(cell -> buildingType == BuildingType.EMPTY ? true : cell.getBuildings().stream().anyMatch(building -> building.buildingType == buildingType))
                 .map(cell -> cell.y)
                 .collect(Collectors.toList());
     }

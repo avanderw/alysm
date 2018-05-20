@@ -48,6 +48,7 @@ public abstract class ABehaviourTree<S> {
             Logger.debug(this);
             for (ABehaviourTree child : children) {
                 Status status = child.process(state);
+                Logger.debug(String.format("    %s - %s", new Object[]{child, status}));
                 switch (status) {
                     case Running:
                     case Success:
@@ -81,6 +82,7 @@ public abstract class ABehaviourTree<S> {
             Logger.debug(this);
             for (ABehaviourTree child : children) {
                 Status status = child.process(state);
+                Logger.debug(String.format("    %s - %s", new Object[]{child, status}));
                 switch (status) {
                     case Running:
                     case Failure:
