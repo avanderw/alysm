@@ -38,6 +38,7 @@ public class BotBehaviourTree {
                         new CanAfford(BuildingType.ATTACK),
                         new ABehaviourTree.Selector(
                                 new Build(BuildingType.ATTACK, LaneType.DEFENDING, LaneType.ONLY_ENERGY),
+                                new Build(BuildingType.ATTACK, LaneType.NOT_ATTACKING, LaneType.ONLY_ENERGY),
                                 new Build(BuildingType.ATTACK, LaneType.DEFENDING, LaneType.EMPTY),
                                 new Build(BuildingType.ATTACK, LaneType.DEFENDING, LaneType.NOT_DEFENDING),
                                 new Build(BuildingType.ATTACK, LaneType.ATTACKING, LaneType.ONLY_ENERGY),

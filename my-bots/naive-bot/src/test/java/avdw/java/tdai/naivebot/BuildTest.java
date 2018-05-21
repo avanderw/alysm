@@ -16,6 +16,13 @@ class BuildTest {
     }
 
     @Test
+    void buildAttackNotAttackingOnlyEnergy() {
+        Build build = new Build(BuildingType.ATTACK, LaneType.NOT_ATTACKING, LaneType.ONLY_ENERGY);
+        assertEquals(ABehaviourTree.Status.Success, build.process(State.read("./src/test/resources/bug/attack-energy-generation.json")));
+    }
+
+
+    @Test
     void buildAttackDefendedNotdDefending() {
         Build build = new Build(BuildingType.ATTACK, LaneType.DEFENDING, LaneType.NOT_DEFENDING);
         assertEquals(ABehaviourTree.Status.Success, build.process(State.read("./src/test/resources/bug/should-build-attack.json")));

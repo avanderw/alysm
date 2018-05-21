@@ -88,6 +88,8 @@ public class Build extends ABehaviourTree<GameState> {
                 lanes.retainAll(selectLanes(state, playerType, BuildingType.EMPTY));
                 break;
             case NOT_ATTACKING:
+                lanes.addAll(state.getGameMap().stream().map(cell->cell.y).collect(Collectors.toList()));
+                lanes.removeAll(selectLanes(state, playerType, BuildingType.ATTACK));
                 break;
             case DEFENDING:
                 lanes.addAll(selectLanes(state, playerType, BuildingType.DEFENSE));
