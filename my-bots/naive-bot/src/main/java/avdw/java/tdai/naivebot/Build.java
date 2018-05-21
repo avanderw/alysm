@@ -74,6 +74,9 @@ public class Build extends ABehaviourTree<GameState> {
     private Set<Integer> selectLanesForPlayer(GameState state, PlayerType playerType, LaneType laneType) {
         Set<Integer> lanes = new HashSet();
         switch (laneType) {
+            case ANY:
+                lanes.addAll(state.getGameMap().stream().map(cell->cell.y).collect(Collectors.toList()));
+                break;
             case EMPTY:
                 lanes.addAll(selectLanes(state, playerType, BuildingType.EMPTY));
                 lanes.removeAll(selectLanes(state, playerType, BuildingType.DEFENSE));
@@ -91,6 +94,8 @@ public class Build extends ABehaviourTree<GameState> {
                 lanes.retainAll(selectLanes(state, playerType, BuildingType.EMPTY));
                 break;
             case NOT_DEFENDING:
+                lanes.addAll(state.getGameMap().stream().map(cell->cell.y).collect(Collectors.toList()));
+                lanes.removeAll(selectLanes(state, playerType, BuildingType.DEFENSE));
                 break;
             case ONLY_ENERGY:
                 lanes.addAll(selectLanes(state, playerType, BuildingType.ENERGY));

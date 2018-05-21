@@ -20,6 +20,15 @@ class BotBehaviourTreeTest {
     void bugNotBuilding() {
         BotBehaviourTree tree = new BotBehaviourTree(State.read("src/test/resources/bug/not-building.json"));
         String command = tree.run();
+        assertNotNull(command);
+        assertNotEquals("", command);
+    }
+
+    @Test
+    void bugShouldBuildAttack() {
+        BotBehaviourTree tree = new BotBehaviourTree(State.read("src/test/resources/bug/should-build-attack.json"));
+        String command = tree.run();
+        assertNotNull(command);
         assertNotEquals("", command);
     }
 }

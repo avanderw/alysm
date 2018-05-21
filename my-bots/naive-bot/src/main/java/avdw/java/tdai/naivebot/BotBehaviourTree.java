@@ -25,8 +25,9 @@ public class BotBehaviourTree {
 
         ABehaviourTree behaviourTree = new ABehaviourTree.Selector(
                 new ABehaviourTree.Sequence(
-                        new EnergyGeneration(Operation.LESS_THAN, gameState.getEnergyGenerationFor(PlayerType.B)),
-                        new EnergyGeneration(Operation.LESS_THAN, gameState.getMostExpensiveBuildingPrice()),
+                        new ABehaviourTree.Selector(
+                                new EnergyGeneration(Operation.LESS_THAN, gameState.getEnergyGenerationFor(PlayerType.B)),
+                                new EnergyGeneration(Operation.LESS_THAN, gameState.getMostExpensiveBuildingPrice())),
                         new CanAfford(BuildingType.ENERGY),
                         new ABehaviourTree.Selector(
                                 new Build(BuildingType.ENERGY, LaneType.DEFENDING, LaneType.EMPTY),
