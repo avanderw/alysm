@@ -1,5 +1,5 @@
 package avdw.java.tdai.naivebot.enums;
 
 public enum Operation {
-    LESS_THAN
+    GREATER_THAN, LESS_THAN
 }

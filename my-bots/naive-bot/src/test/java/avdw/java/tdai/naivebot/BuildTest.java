@@ -2,7 +2,6 @@ package avdw.java.tdai.naivebot;
 
 import avdw.java.tdai.naivebot.entities.GameState;
 import avdw.java.tdai.naivebot.enums.BuildingType;
-import avdw.java.tdai.naivebot.enums.MyLane;
 import avdw.java.tdai.naivebot.enums.LaneType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -53,15 +52,11 @@ class BuildTest {
         assertEquals(ABehaviourTree.Status.Failure, build.process(State.read("./src/test/resources/mylane-no-defense.json")));
     }
 
-
-
-
-
-
-
-
-
-
+    @Test
+    void buildDefendAnyAttacking() {
+        Build build = new Build(BuildingType.DEFENSE, LaneType.ANY, LaneType.ATTACKING);
+        assertEquals(ABehaviourTree.Status.Success, build.process(State.read("./src/test/resources/defend-attacked-lane.json")));
+    }
 
     @Test
     void buildEnergyEmptyEmpty() {
@@ -71,5 +66,11 @@ class BuildTest {
 
         assertEquals(ABehaviourTree.Status.Success, status);
         assertNotEquals("", state.command);
+    }
+
+    @Test
+    void buildAttackNotAttackingNotAttacking() {
+        Build build = new Build(BuildingType.ATTACK, LaneType.NOT_ATTACKING, LaneType.NOT_ATTACKING);
+        assertEquals(ABehaviourTree.Status.Success, build.process(State.read("./src/test/resources/bug/not-building.json")));
     }
 }

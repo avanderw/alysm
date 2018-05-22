@@ -17,11 +17,11 @@ public class BotBehaviourTree {
     private GameState gameState;
     private Random rand = new Random(LocalTime.now().toNanoOfDay());
 
-    public BotBehaviourTree(GameState gameState){
+    public BotBehaviourTree(GameState gameState) {
         this.gameState = gameState;
     }
 
-    public String run(){
+    public String run() {
 
         ABehaviourTree behaviourTree = new ABehaviourTree.Selector(
                 new ABehaviourTree.Sequence(
@@ -39,11 +39,13 @@ public class BotBehaviourTree {
                         new ABehaviourTree.Selector(
                                 new Build(BuildingType.ATTACK, LaneType.DEFENDING, LaneType.ONLY_ENERGY),
                                 new Build(BuildingType.ATTACK, LaneType.NOT_ATTACKING, LaneType.ONLY_ENERGY),
-                                new Build(BuildingType.ATTACK, LaneType.DEFENDING, LaneType.EMPTY),
                                 new Build(BuildingType.ATTACK, LaneType.DEFENDING, LaneType.NOT_DEFENDING),
+                                new Build(BuildingType.ATTACK, LaneType.DEFENDING, LaneType.EMPTY),
                                 new Build(BuildingType.ATTACK, LaneType.ATTACKING, LaneType.ONLY_ENERGY),
                                 new Build(BuildingType.ATTACK, LaneType.ATTACKING, LaneType.EMPTY),
-                                new Build(BuildingType.ATTACK, LaneType.ATTACKING, LaneType.NOT_DEFENDING))),
+                                new Build(BuildingType.ATTACK, LaneType.ATTACKING, LaneType.NOT_DEFENDING),
+                                new Build(BuildingType.ATTACK, LaneType.ATTACKING, LaneType.ANY),
+                                new Build(BuildingType.ATTACK, LaneType.NOT_ATTACKING, LaneType.NOT_ATTACKING))),
                 new ABehaviourTree.Sequence(
                         new CanAfford(BuildingType.DEFENSE),
                         new ABehaviourTree.Selector(
@@ -52,7 +54,13 @@ public class BotBehaviourTree {
                                 new Build(BuildingType.DEFENSE, LaneType.ONLY_ENERGY, LaneType.NOT_ATTACKING),
                                 new Build(BuildingType.DEFENSE, LaneType.ONLY_ATTACKING, LaneType.NOT_ATTACKING),
                                 new Build(BuildingType.DEFENSE, LaneType.ONLY_ENERGY, LaneType.EMPTY),
-                                new Build(BuildingType.DEFENSE, LaneType.ONLY_ATTACKING, LaneType.EMPTY))),
+                                new Build(BuildingType.DEFENSE, LaneType.ONLY_ATTACKING, LaneType.EMPTY),
+                                new Build(BuildingType.DEFENSE, LaneType.ANY, LaneType.ATTACKING))),
+                new ABehaviourTree.Sequence(
+                        new Energy(Operation.GREATER_THAN, 3 * gameState.getMostExpensiveBuildingPrice()),
+                        new ABehaviourTree.Selector(
+                                new Replace(BuildingType.ENERGY, BuildingType.ATTACK))
+                ),
                 new DoNothing());
         behaviourTree.process(gameState);
 
@@ -62,35 +70,5 @@ public class BotBehaviourTree {
         //if there is a row where i don't have energy and there is no enemy attack build energy in the back row
         //if i have a defense building on a row, then build an attack building behind it.
         //if i don't need to do anything then do either attack or defend randomly based on chance (65% attack, 35% defense)
-    }
-
-
-
-    private List<Building> getAllBuildingsForPlayer(PlayerType playerType, Predicate<Building> filter, int y){
-        return gameState.getGameMap().stream()
-                .filter(c -> c.cellOwner == playerType && c.y == y)
-                .flatMap(c -> c.getBuildings().stream())
-                .filter(filter)
-                .collect(Collectors.toList());
-    }
-
-    private List<CellStateContainer> getListOfEmptyCellsForColumn(int x){
-        return gameState.getGameMap().stream()
-                .filter(c -> c.x == x && isCellEmpty(x, c.y))
-                .collect(Collectors.toList());
-    }
-
-    private boolean isCellEmpty(int x, int y) {
-        Optional<CellStateContainer> cellOptional = gameState.getGameMap().stream()
-                .filter(c -> c.x == x && c.y == y)
-                .findFirst();
-
-        if (cellOptional.isPresent()){
-            CellStateContainer cell = cellOptional.get();
-            return cell.getBuildings().size() <= 0;
-        }else{
-            System.out.println("Invalid cell selected");
-        }
-        return true;
     }
 }

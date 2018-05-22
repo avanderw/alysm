@@ -31,4 +31,29 @@ class BotBehaviourTreeTest {
         assertNotNull(command);
         assertNotEquals("", command);
     }
+
+
+    @Test
+    void reinforceAttack() {
+        BotBehaviourTree tree = new BotBehaviourTree(State.read("src/test/resources/reinforce-attack.json"));
+        String command = tree.run();
+        assertNotNull(command);
+        assertNotEquals("", command);
+    }
+
+    @Test
+    void defendAttackedLane() {
+        BotBehaviourTree tree = new BotBehaviourTree(State.read("src/test/resources/defend-attacked-lane.json"));
+        String command = tree.run();
+        assertNotNull(command);
+        assertNotEquals("", command);
+    }
+
+    @Test
+    void bugNotBuilding1() {
+        BotBehaviourTree tree = new BotBehaviourTree(State.read("src/test/resources/bug/not-building.json"));
+        String command = tree.run();
+        assertNotNull(command);
+        assertNotEquals("", command);
+    }
 }

@@ -34,6 +34,11 @@ public class Build extends ABehaviourTree<GameState> {
         if (!isSpaceToBuild(state)) return Status.Failure;
 
         Set<Integer> myLanes = selectLanesForPlayer(state, PlayerType.A, myLane);
+        myLanes.retainAll(state.getGameMap().stream()
+                .filter(cell -> cell.cellOwner == PlayerType.A)
+                .filter(cell -> cell.getBuildings().isEmpty())
+                .map(cell -> cell.y)
+                .collect(Collectors.toList()));
         if (myLanes.isEmpty()) {
             return Status.Failure;
         }
@@ -55,9 +60,8 @@ public class Build extends ABehaviourTree<GameState> {
                 .filter(cell -> cell.cellOwner == PlayerType.A)
                 .filter(cell -> cell.getBuildings().isEmpty())
                 .collect(Collectors.toList());
-
         if (cells.isEmpty()) {
-            throw new RuntimeException("this should not be possible");
+            return Status.Failure;
         }
 
         CellStateContainer cell;
@@ -75,7 +79,7 @@ public class Build extends ABehaviourTree<GameState> {
         Set<Integer> lanes = new HashSet();
         switch (laneType) {
             case ANY:
-                lanes.addAll(state.getGameMap().stream().map(cell->cell.y).collect(Collectors.toList()));
+                lanes.addAll(state.getGameMap().stream().map(cell -> cell.y).collect(Collectors.toList()));
                 break;
             case EMPTY:
                 lanes.addAll(selectLanes(state, playerType, BuildingType.EMPTY));
@@ -85,18 +89,16 @@ public class Build extends ABehaviourTree<GameState> {
                 break;
             case ATTACKING:
                 lanes.addAll(selectLanes(state, playerType, BuildingType.ATTACK));
-                lanes.retainAll(selectLanes(state, playerType, BuildingType.EMPTY));
                 break;
             case NOT_ATTACKING:
-                lanes.addAll(state.getGameMap().stream().map(cell->cell.y).collect(Collectors.toList()));
+                lanes.addAll(state.getGameMap().stream().map(cell -> cell.y).collect(Collectors.toList()));
                 lanes.removeAll(selectLanes(state, playerType, BuildingType.ATTACK));
                 break;
             case DEFENDING:
                 lanes.addAll(selectLanes(state, playerType, BuildingType.DEFENSE));
-                lanes.retainAll(selectLanes(state, playerType, BuildingType.EMPTY));
                 break;
             case NOT_DEFENDING:
-                lanes.addAll(state.getGameMap().stream().map(cell->cell.y).collect(Collectors.toList()));
+                lanes.addAll(state.getGameMap().stream().map(cell -> cell.y).collect(Collectors.toList()));
                 lanes.removeAll(selectLanes(state, playerType, BuildingType.DEFENSE));
                 break;
             case ONLY_ENERGY:
@@ -132,7 +134,7 @@ public class Build extends ABehaviourTree<GameState> {
         return (numEmptyCells != 0);
     }
 
-    private String buildCommand(int x, int y, BuildingType buildingType) {
+    static String buildCommand(int x, int y, BuildingType buildingType) {
         return String.format("%s,%d,%s", String.valueOf(x), y, buildingType.getCommandCode());
     }
 
