@@ -2,7 +2,7 @@
   "round-state-output-location": "./matches",
   "game-config-file-location": "./game-config.properties",
   "max-runtime-ms": 2000,
-  "player-a": "../my-bots/naive-bot",
-  "player-b": "./starter-bots/java"
+  "player-a": "../my-bots/tinker-ai",
+  "player-b": "../my-bots/naive-bot-ai"
 }
 

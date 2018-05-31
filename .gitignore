@@ -5,6 +5,11 @@
 
 */matches/*
 .idea/
+*.iml
+target/
+*.class
+*.lst
+*.jar
 
 #################
 ## Eclipse
@@ -222,3 +227,4 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
