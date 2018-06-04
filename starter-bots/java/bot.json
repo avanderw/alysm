@@ -3,6 +3,6 @@
 	"email": "avanderw@gmail.com",
 	"nickName": "Andrew",
 	"botLocation": "/target",
-	"botFileName": "naive-bot-1.0-SNAPSHOT-jar-with-dependencies.jar",
+	"botFileName": "java-sample-bot-jar-with-dependencies.jar",
 	"botLanguage": "java"
 }
