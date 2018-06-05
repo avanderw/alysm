@@ -1,16 +1,13 @@
 package avdw.java.entelect.core.state;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class GameState {
     public String command = "";
     public GameDetails gameDetails;
     protected Player[] players;
     protected CellStateContainer[][] gameMap;
-    public Set<Integer> selectedLanes;
+    public Set<Integer> selectedLanes = new HashSet();
 
     public List<Player> getPlayers(){
         return new ArrayList<Player>(Arrays.asList(players));

@@ -16,7 +16,7 @@
         </repository>
     </distributionManagement>
 
-    <buildBuildingV1>
+    <build>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -36,5 +36,5 @@
                 <version>3.0.1</version>
             </plugin>
         </plugins>
-    </buildBuildingV1>
+    </build>
 </project>
