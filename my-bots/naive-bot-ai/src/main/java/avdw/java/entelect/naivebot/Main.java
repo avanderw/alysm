@@ -18,7 +18,7 @@ public class Main {
                 .formatPattern("{date:yyyy-MM-dd HH:mm:ss} [{thread}] {class}.{method}() {level}: {message}")
                 .level(Level.TRACE)
                 .activate();
-        NaiveBotAi naiveBot = new NaiveBotAi(State.read(STATE_FILE_NAME));
+        BotAi naiveBot = new BotAi(State.read(STATE_FILE_NAME));
         writeBotResponseToFile(naiveBot.run());
     }
 

@@ -6,14 +6,14 @@ import avdw.java.entelect.core.state.BuildingType;
 import avdw.java.entelect.core.state.GameState;
 import avdw.java.entelect.core.state.PlayerType;
 
-public class BuildingCount extends ABehaviourTree<GameState> {
+public class TotalBuildingCount extends ABehaviourTree<GameState> {
 
     private PlayerType playerType;
     private final BuildingType buildingType;
     private final Operation operation;
     private final Integer count;
 
-    public BuildingCount(PlayerType playerType, BuildingType buildingType, Operation operation, Integer count) {
+    public TotalBuildingCount(PlayerType playerType, BuildingType buildingType, Operation operation, Integer count) {
         this.playerType = playerType;
         this.buildingType = buildingType;
         this.operation = operation;

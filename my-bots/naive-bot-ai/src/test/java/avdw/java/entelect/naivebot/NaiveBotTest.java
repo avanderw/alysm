@@ -19,7 +19,7 @@ class NaiveBotTest {
 
     @Test
     void bugNotBuilding() {
-        NaiveBotAi tree = new NaiveBotAi(State.read("src/test/resources/bug/not-building.json"));
+        BotAi tree = new BotAi(State.read("src/test/resources/bug/not-building.json"));
         String command = tree.run();
         assertNotNull(command);
         assertNotEquals("", command);
@@ -27,7 +27,7 @@ class NaiveBotTest {
 
     @Test
     void bugShouldBuildAttack() {
-        NaiveBotAi tree = new NaiveBotAi(State.read("src/test/resources/bug/should-build-attack.json"));
+        BotAi tree = new BotAi(State.read("src/test/resources/bug/should-build-attack.json"));
         String command = tree.run();
         assertNotNull(command);
         assertNotEquals("", command);
@@ -36,7 +36,7 @@ class NaiveBotTest {
 
     @Test
     void reinforceAttack() {
-        NaiveBotAi tree = new NaiveBotAi(State.read("src/test/resources/reinforce-attack.json"));
+        BotAi tree = new BotAi(State.read("src/test/resources/reinforce-attack.json"));
         String command = tree.run();
         assertNotNull(command);
         assertNotEquals("", command);
@@ -44,7 +44,7 @@ class NaiveBotTest {
 
     @Test
     void defendAttackedLane() {
-        NaiveBotAi tree = new NaiveBotAi(State.read("src/test/resources/defend-attacked-lane.json"));
+        BotAi tree = new BotAi(State.read("src/test/resources/defend-attacked-lane.json"));
         String command = tree.run();
         assertNotNull(command);
         assertNotEquals("", command);
@@ -52,7 +52,7 @@ class NaiveBotTest {
 
     @Test
     void bugNotBuilding1() {
-        NaiveBotAi tree = new NaiveBotAi(State.read("src/test/resources/bug/not-building.json"));
+        BotAi tree = new BotAi(State.read("src/test/resources/bug/not-building.json"));
         String command = tree.run();
         assertNotNull(command);
         assertNotEquals("", command);
@@ -61,7 +61,7 @@ class NaiveBotTest {
 
     @Test
     void replaceEnergyBuilding() {
-        NaiveBotAi tree = new NaiveBotAi(State.read("src/test/resources/replace-energy-building.json"));
+        BotAi tree = new BotAi(State.read("src/test/resources/replace-energy-building.json"));
         String command = tree.run();
         assertNotNull(command);
         assertEquals("0,1,1", command);

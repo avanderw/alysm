@@ -54,7 +54,7 @@
         </dependency>
     </dependencies>
 
-    <build>
+    <buildBuildingV1>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -92,7 +92,7 @@
                 <directory>src/main/resources</directory>
             </resource>
         </resources>
-    </build>
+    </buildBuildingV1>
     <repositories>
         <repository>
             <id>bintray-entelect-challenge-game-engine-interfaces</id>

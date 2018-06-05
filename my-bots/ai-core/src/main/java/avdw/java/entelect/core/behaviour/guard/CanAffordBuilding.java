@@ -5,10 +5,10 @@ import avdw.java.entelect.core.state.BuildingType;
 import avdw.java.entelect.core.state.GameState;
 import avdw.java.entelect.core.state.PlayerType;
 
-public class CanAfford extends ABehaviourTree<GameState> {
+public class CanAffordBuilding extends ABehaviourTree<GameState> {
     private BuildingType buildingType;
 
-    public CanAfford(BuildingType buildingType) {
+    public CanAffordBuilding(BuildingType buildingType) {
         this.buildingType = buildingType;
     }
 

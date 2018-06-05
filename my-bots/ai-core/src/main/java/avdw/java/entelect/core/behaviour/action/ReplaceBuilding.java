@@ -8,11 +8,11 @@ import avdw.java.entelect.core.state.PlayerType;
 
 import java.util.Optional;
 
-public class Replace extends ABehaviourTree<GameState> {
+public class ReplaceBuilding extends ABehaviourTree<GameState> {
     private final BuildingType obsolete;
     private BuildingType replacement;
 
-    public Replace(BuildingType obsolete, BuildingType replacement) {
+    public ReplaceBuilding(BuildingType obsolete, BuildingType replacement) {
         this.obsolete = obsolete;
         this.replacement = replacement;
     }
@@ -28,7 +28,7 @@ public class Replace extends ABehaviourTree<GameState> {
             return Status.Failure;
         }
 
-        state.command = Build.buildCommand(replaceCell.get().x, replaceCell.get().y, replacement);
+        state.command = BuildBuildingV1.buildCommand(replaceCell.get().x, replaceCell.get().y, replacement);
         return Status.Success;
     }
 }

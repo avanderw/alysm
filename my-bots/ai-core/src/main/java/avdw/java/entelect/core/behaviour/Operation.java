@@ -1,5 +1,5 @@
 package avdw.java.entelect.core.behaviour;
 
 public enum Operation {
-    GREATER_THAN, LESS_THAN
+    GREATER_THAN, EQUALS, LESS_THAN
 }

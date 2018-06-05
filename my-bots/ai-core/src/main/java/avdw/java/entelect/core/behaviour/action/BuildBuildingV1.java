@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Build extends ABehaviourTree<GameState> {
+public class BuildBuildingV1 extends ABehaviourTree<GameState> {
     private final BuildingType buildingType;
     private final LaneType myLane;
     private final LaneType theirLane;
 
-    public Build(BuildingType buildingType, LaneType myLane, LaneType theirLane) {
+    public BuildBuildingV1(BuildingType buildingType, LaneType myLane, LaneType theirLane) {
 
         this.buildingType = buildingType;
         this.myLane = myLane;

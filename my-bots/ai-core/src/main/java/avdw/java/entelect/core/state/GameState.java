@@ -3,12 +3,14 @@ package avdw.java.entelect.core.state;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class GameState {
     public String command = "";
     public GameDetails gameDetails;
     protected Player[] players;
     protected CellStateContainer[][] gameMap;
+    public Set<Integer> selectedLanes;
 
     public List<Player> getPlayers(){
         return new ArrayList<Player>(Arrays.asList(players));

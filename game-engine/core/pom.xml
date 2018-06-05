@@ -11,7 +11,7 @@
 
     <artifactId>core</artifactId>
 
-    <build>
+    <buildBuildingV1>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -22,7 +22,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
             </plugin>
         </plugins>
-    </build>
+    </buildBuildingV1>
     <dependencies>
         <dependency>
             <groupId>za.co.entelect.challenge</groupId>

@@ -6,7 +6,7 @@ import avdw.java.entelect.core.state.State;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class EnergyGenerationTest {
+class EnergySupplyGenerationTest {
 
     @Test
     void processLessThanSuccess() {

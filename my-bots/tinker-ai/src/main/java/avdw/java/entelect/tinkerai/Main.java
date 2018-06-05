@@ -20,7 +20,7 @@ public class Main {
                 .level(Level.TRACE)
                 .activate();
 
-        BotBehaviourTree ai = new TinkerAi(State.read(STATE_FILE_NAME));
+        BotBehaviourTree ai = new BotAi(State.read(STATE_FILE_NAME));
         writeBotResponseToFile(ai.run());
     }
 

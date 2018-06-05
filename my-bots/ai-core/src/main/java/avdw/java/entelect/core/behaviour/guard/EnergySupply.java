@@ -5,11 +5,11 @@ import avdw.java.entelect.core.behaviour.Operation;
 import avdw.java.entelect.core.state.GameState;
 import avdw.java.entelect.core.state.PlayerType;
 
-public class Energy extends ABehaviourTree<GameState> {
+public class EnergySupply extends ABehaviourTree<GameState> {
     private Operation operation;
     private int value;
 
-    public Energy(Operation operation, int value) {
+    public EnergySupply(Operation operation, int value) {
         this.operation = operation;
         this.value = value;
     }
