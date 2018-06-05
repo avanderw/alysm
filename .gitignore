@@ -3,13 +3,14 @@
 #################
 
 
-*/matches/*
+**/matches/*
 .idea/
 *.iml
 target/
 *.class
 *.lst
 *.jar
+**/replays/*
 
 #################
 ## Eclipse
