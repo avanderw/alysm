@@ -108,6 +108,7 @@ public class GameBootstrapper {
             BotMetaData botConfig = getBotMetaData(playerConfig);
             BotRunner botRunner = BotRunnerFactory.createBotRunner(botConfig, maximumBotRuntimeMilliSeconds);
 
+            System.err.println(botConfig.getBotDirectory());
             File botFile = new File(botConfig.getBotDirectory());
             if (!botFile.exists()) {
                 throw new FileNotFoundException(String.format("Could not find %s bot file for %s(%s)", botConfig.getBotLanguage(), botConfig.getAuthor(), botConfig.getNickName()));

@@ -27,6 +27,10 @@ public class CompareGuard extends ABehaviourTree<GameState> {
                 if (left == right) {
                     return Status.Success;
                 }
+            case LESS_THAN_OR_EQUALS:
+                if (left <= right) {
+                    return Status.Success;
+                }
             case LESS_THAN:
                 if (left < right) {
                     return Status.Success;

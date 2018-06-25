@@ -3,7 +3,7 @@
   "game-config-file-location": "../game-config.properties",
   "verbose-mode": true,
   "max-runtime-ms": 2000,
-  "player-a": "../../codex-ai",
-  "player-b": "../../naive-bot-ai"
+  "player-a": "../../tinker-ai",
+  "player-b": "../../MarcoV1.2"
 }
 

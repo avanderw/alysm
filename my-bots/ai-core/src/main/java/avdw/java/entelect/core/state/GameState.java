@@ -25,15 +25,15 @@ public class GameState {
         return list;
     }
 
-    public int getEnergyFor(PlayerType playerType){
-        return getPlayers().stream()
+    public Long getEnergyFor(PlayerType playerType){
+        return (long) getPlayers().stream()
                 .filter(p -> p.playerType == playerType)
                 .mapToInt(p -> p.energy)
                 .sum();
     }
 
-    public int getEnergyGenerationFor(PlayerType playerType) {
-        return gameDetails.roundIncomeEnergy + getGameMap().stream()
+    public Long getEnergyGenerationFor(PlayerType playerType) {
+        return (long) gameDetails.roundIncomeEnergy + getGameMap().stream()
                 .filter(cell-> cell.cellOwner == playerType)
                 .map(cell->cell.buildings.stream().findFirst())
                 .filter(building->building.isPresent())
@@ -42,18 +42,18 @@ public class GameState {
                 .sum();
     }
 
-    public int getBuildingPrice(BuildingType buildingType) {
-        return gameDetails.buildingPrices.get(buildingType);
+    public Long getBuildingPrice(BuildingType buildingType) {
+        return (long) gameDetails.buildingPrices.get(buildingType);
     }
 
-    public int getMostExpensiveBuildingPrice(){
+    public Long getMostExpensiveBuildingPrice(){
         int buildingPrice = 0;
         for (Integer value : gameDetails.buildingPrices.values()){
             if (value > buildingPrice){
                 buildingPrice = value;
             }
         }
-        return buildingPrice;
+        return (long) buildingPrice;
     }
 
     public long countBuildingsFor(PlayerType playerType, BuildingType buildingType) {

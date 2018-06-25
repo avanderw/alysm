@@ -3,7 +3,7 @@
   "game-config-file-location": "../game-config.properties",
   "verbose-mode": true,
   "max-runtime-ms": 2000,
-  "player-a": "../../naive-bot-ai",
-  "player-b": "../../../reference-bot/java"
+  "player-a": "../../",
+  "player-b": "../../codex-ai"
 }
 

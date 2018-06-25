@@ -10,10 +10,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>my-bots/ai-core</module>
-        <module>my-bots/codex-ai</module>
-        <module>my-bots/naive-bot-ai</module>
-        <module>reference-bot/java</module>
+        <module>ai-core</module>
+        <module>codex-ai</module>
+        <module>tinker-ai</module>
     </modules>
 
     <properties>
