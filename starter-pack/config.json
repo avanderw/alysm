@@ -1,9 +1,0 @@
-{
-  "round-state-output-location": "./matches",
-  "game-config-file-location": "./game-config.properties",
-  "verbose-mode": true,
-  "max-runtime-ms": 2000,
-  "player-a": "../my-bots/tinker-ai",
-  "player-b": "../my-bots/naive-bot-ai"
-}
-
