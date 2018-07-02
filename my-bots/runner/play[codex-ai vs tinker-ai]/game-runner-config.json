@@ -3,7 +3,8 @@
   "game-config-file-location": "../game-config.properties",
   "verbose-mode": true,
   "max-runtime-ms": 2000,
-  "player-a": "../../",
-  "player-b": "../../codex-ai"
+  "player-a": "../../codex-ai",
+  "player-b": "../../tinker-ai",
+  "is-tournament-mode": false
 }
 
