@@ -22,7 +22,7 @@ public class BotAi implements BotBehaviourTree {
     public String run() {
         ABehaviourTree behaviourTree = new ABehaviourTree.Selector(
                 new ABehaviourTree.Sequence(
-                        new LaneSelector(
+                        new LaneSelector("",
                                 new LaneFilter(PlayerType.A, BuildingType.ATTACK, Operation.EQUALS, 0),
                                 new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.EQUALS, 0),
                                 new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.EQUALS, 0),
@@ -31,7 +31,7 @@ public class BotAi implements BotBehaviourTree {
                         new BuildBuilding(BuildingType.ATTACK, Direction.RIGHT)
                 ),
                 new ABehaviourTree.Sequence(
-                        new LaneSelector(
+                        new LaneSelector("",
                                 new LaneFilter(PlayerType.A, BuildingType.ATTACK, Operation.LESS_THAN, 3),
                                 new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.GREATER_THAN, 0),
                                 new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.EQUALS, 0),
@@ -40,7 +40,7 @@ public class BotAi implements BotBehaviourTree {
                         new BuildBuilding(BuildingType.ATTACK, Direction.RIGHT)
                 ),
                 new ABehaviourTree.Sequence(
-                        new LaneSelector(
+                        new LaneSelector("",
                                 new LaneFilter(PlayerType.A, BuildingType.ATTACK, Operation.EQUALS, 0),
                                 new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.LESS_THAN, 3),
                                 new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.EQUALS, 0)
@@ -48,7 +48,7 @@ public class BotAi implements BotBehaviourTree {
                         new BuildBuilding(BuildingType.ATTACK, Direction.RIGHT)
                 ),
                 new ABehaviourTree.Sequence(
-                        new LaneSelector(
+                        new LaneSelector("",
                                 new LaneFilter(PlayerType.A, BuildingType.ENERGY, Operation.EQUALS, 0),
                                 new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.EQUALS, 0),
                                 new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.EQUALS, 0),

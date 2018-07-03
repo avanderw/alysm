@@ -25,7 +25,7 @@ public class BotAi implements BotBehaviourTree {
                 ),
                 new ABehaviourTree.Sequence(
                         new ABehaviourTree.Selector(
-                                new CompareGuard(
+                                new CompareGuard("",
                                         gameState.getEnergyGenerationFor(PlayerType.A),
                                         Operation.LESS_THAN,
                                         gameState.getMostExpensiveBuildingPrice()
@@ -43,7 +43,7 @@ public class BotAi implements BotBehaviourTree {
 
     private ABehaviourTree generalDefendStrategy() {
         ABehaviourTree aBehaviourTree = new ABehaviourTree.Selector(
-                new LaneSelector(
+                new LaneSelector("",
                         new LaneFilter(PlayerType.A, BuildingType.DEFENSE, Operation.EQUALS, 0)
                 )
         );
@@ -53,43 +53,43 @@ public class BotAi implements BotBehaviourTree {
 
     private ABehaviourTree generalAttackStrategy() {
         ABehaviourTree aBehaviourTree = new ABehaviourTree.Selector(
-                new LaneSelector( // ensure defense on great weakness
+                new LaneSelector( "",// ensure defense on great weakness
                         new LaneFilter(PlayerType.A, BuildingType.ENERGY, Operation.GREATER_THAN, 1),
                         new LaneFilter(PlayerType.A, BuildingType.ATTACK, Operation.LESS_THAN, 2)
                 ),
-                new LaneSelector( // stop their fresh attack
+                new LaneSelector( "",// stop their fresh attack
                         new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.GREATER_THAN, 1),
                         new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.EQUALS, 0)
                 ),
-                new LaneSelector( // open a new attack against their weakness whilst protecting my weakness
+                new LaneSelector( "",// open a new attack against their weakness whilst protecting my weakness
                         new LaneFilter(PlayerType.A, BuildingType.ATTACK, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.A, BuildingType.ENERGY, Operation.GREATER_THAN, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ENERGY, Operation.GREATER_THAN, 0),
                         new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.EQUALS, 0)
                 ),
-                new LaneSelector( // open a new attack against their great weakness
+                new LaneSelector( "",// open a new attack against their great weakness
                         new LaneFilter(PlayerType.A, BuildingType.ATTACK, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ENERGY, Operation.GREATER_THAN, 1),
                         new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.EQUALS, 0)
                 ),
-                new LaneSelector( // open a new attack against their weakness
+                new LaneSelector( "",// open a new attack against their weakness
                         new LaneFilter(PlayerType.A, BuildingType.ATTACK, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ENERGY, Operation.GREATER_THAN, 0),
                         new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.EQUALS, 0)
                 ),
-                new LaneSelector( // reinforce an attack against their weakness
+                new LaneSelector( "",// reinforce an attack against their weakness
                         new LaneFilter(PlayerType.B, BuildingType.ENERGY, Operation.GREATER_THAN, 0),
                         new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.EQUALS, 0)
                 ),
-                new LaneSelector( // protect against my weakness
+                new LaneSelector( "",// protect against my weakness
                         new LaneFilter(PlayerType.A, BuildingType.ENERGY, Operation.GREATER_THAN, 0),
                         new LaneFilter(PlayerType.A, BuildingType.ATTACK, Operation.EQUALS, 0)
                 ),
-                new LaneSelector( // reinforce attacks until they can destroy a defence building
+                new LaneSelector( "",// reinforce attacks until they can destroy a defence building
                         new LaneFilter(PlayerType.A, BuildingType.ATTACK, Operation.GREATER_THAN, 0),
                         new LaneFilter(PlayerType.A, BuildingType.ATTACK, Operation.LESS_THAN, 4)
                 )
@@ -100,46 +100,46 @@ public class BotAi implements BotBehaviourTree {
 
     public ABehaviourTree generalEnergyStrategy() {
         ABehaviourTree aBehaviourTree = new ABehaviourTree.Selector(
-                new LaneSelector(
+                new LaneSelector("",
                         new LaneFilter(PlayerType.A, BuildingType.DEFENSE, Operation.GREATER_THAN, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ENERGY, Operation.EQUALS, 0)
                 ),
-                new LaneSelector(
+                new LaneSelector("",
                         new LaneFilter(PlayerType.A, BuildingType.ENERGY, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.EQUALS, 0)
                 ),
-                new LaneSelector(
+                new LaneSelector("",
                         new LaneFilter(PlayerType.A, BuildingType.DEFENSE, Operation.GREATER_THAN, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ENERGY, Operation.GREATER_THAN, 0)
                 ),
-                new LaneSelector(
+                new LaneSelector("",
                         new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ENERGY, Operation.GREATER_THAN, 0)
                 ),
-                new LaneSelector(
+                new LaneSelector("",
                         new LaneFilter(PlayerType.A, BuildingType.DEFENSE, Operation.GREATER_THAN, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.GREATER_THAN, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ENERGY, Operation.GREATER_THAN, 0)
                 ),
-                new LaneSelector(
+                new LaneSelector("",
                         new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.EQUALS, 0),
                         new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.GREATER_THAN, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ENERGY, Operation.GREATER_THAN, 0)
                 ),
-                new LaneSelector(
+                new LaneSelector("",
                         new LaneFilter(PlayerType.A, BuildingType.DEFENSE, Operation.GREATER_THAN, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.GREATER_THAN, 0),
                         new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.GREATER_THAN, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ENERGY, Operation.GREATER_THAN, 0)
                 ),
-                new LaneSelector(
+                new LaneSelector("",
                         new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.GREATER_THAN, 0),
                         new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.GREATER_THAN, 0),
                         new LaneFilter(PlayerType.B, BuildingType.ENERGY, Operation.GREATER_THAN, 0)
