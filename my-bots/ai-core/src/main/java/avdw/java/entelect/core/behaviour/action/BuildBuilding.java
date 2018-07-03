@@ -2,6 +2,7 @@ package avdw.java.entelect.core.behaviour.action;
 
 import avdw.java.entelect.core.behaviour.ABehaviourTree;
 import avdw.java.entelect.core.state.*;
+import org.pmw.tinylog.Logger;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -50,8 +51,10 @@ public class BuildBuilding extends ABehaviourTree<GameState> {
 
         if (cell.isPresent()) {
             state.command = buildCommand(cell.get().x, cell.get().y, buildingType);
+            Logger.debug(String.format("[SUCCESS] Building %s on the %s at [%s, %s]", buildingType, direction, cell.get().x, cell.get().y));
             return Status.Success;
         } else {
+            Logger.debug(String.format("[FAILURE] Building %s on the %s", buildingType, direction));
             return Status.Failure;
         }
     }

@@ -3,6 +3,7 @@ package avdw.java.entelect.core.behaviour.filter;
 import avdw.java.entelect.core.behaviour.ABehaviourTree;
 import avdw.java.entelect.core.behaviour.Operation;
 import avdw.java.entelect.core.state.GameState;
+import org.pmw.tinylog.Logger;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -12,9 +13,11 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class LaneSelector extends ABehaviourTree<GameState> {
+    private String filterMessage;
     private LaneFilter[] laneFilters;
 
-    public LaneSelector(LaneFilter... laneFilters) {
+    public LaneSelector(String filterMessage, LaneFilter... laneFilters) {
+        this.filterMessage = filterMessage;
         this.laneFilters = laneFilters;
     }
 
@@ -63,9 +66,12 @@ public class LaneSelector extends ABehaviourTree<GameState> {
         );
 
         state.selectedLanes = selectedLanes;
+
         if (selectedLanes.isEmpty()) {
+            Logger.debug(String.format("[FAILURE] Select a lane where {%s}", filterMessage));
             return Status.Failure;
         } else {
+            Logger.debug(String.format("[SUCCESS] Select a lane where {%s}", filterMessage));
             return Status.Success;
         }
     }

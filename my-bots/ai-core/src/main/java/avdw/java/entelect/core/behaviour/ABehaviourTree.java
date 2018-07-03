@@ -44,10 +44,10 @@ public abstract class ABehaviourTree<S> {
 
         @Override
         public Status process(S state) {
-            Logger.debug(this);
+            Logger.trace(String.format("%s",this.getClass().getSimpleName()));
             for (ABehaviourTree child : children) {
                 Status status = child.process(state);
-                Logger.debug(String.format("    %s - %s", new Object[]{child, status}));
+                Logger.trace(String.format("    %s - %s", new Object[]{child.getClass().getSimpleName(), status}));
                 switch (status) {
                     case Running:
                     case Success:
@@ -78,10 +78,11 @@ public abstract class ABehaviourTree<S> {
 
         @Override
         public Status process(S state) {
-            Logger.debug(this);
+            Logger.trace(String.format("%s",this.getClass().getSimpleName()));
             for (ABehaviourTree child : children) {
                 Status status = child.process(state);
-                Logger.debug(String.format("    %s - %s", new Object[]{child, status}));
+                Logger.trace(String.format("    %s - %s", new Object[]{child.getClass().getSimpleName(), status}));
+
                 switch (status) {
                     case Running:
                     case Failure:
@@ -120,6 +121,38 @@ public abstract class ABehaviourTree<S> {
                     return Status.Running;
                 case Failure:
                     return Status.Success;
+                default:
+                    throw new AssertionError(status.name());
+            }
+        }
+    }
+
+    /**
+     * Will always fail the task.
+     *
+     * @author Andrew van der Westhuizen
+     */
+    public static class AlwaysFail<S> extends ABehaviourTree<S> {
+
+        public AlwaysFail() {
+        }
+
+        public AlwaysFail(ABehaviourTree<S> child) {
+            super(child);
+        }
+
+        @Override
+        public Status process(S state) {
+            if (children.size() != 1) {
+                throw new AssertionError(children);
+            }
+
+            Status status = children.get(0).process(state);
+            switch (status) {
+                case Running:
+                case Success:
+                case Failure:
+                    return Status.Failure;
                 default:
                     throw new AssertionError(status.name());
             }
