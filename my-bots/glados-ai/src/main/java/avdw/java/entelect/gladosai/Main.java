@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) {
         Configurator.currentConfig()
                 .formatPattern("{date:yyyy-MM-dd HH:mm:ss} [{thread}] {class}.{method}() {level}: {message}")
-                .level(Level.TRACE)
+                .level(Level.DEBUG)
                 .activate();
 
         BotBehaviourTree ai = new BotAi(State.read(STATE_FILE_NAME));

@@ -2,23 +2,68 @@ package avdw.java.entelect.core.behaviour.filter;
 
 import avdw.java.entelect.core.behaviour.ABehaviourTree;
 import avdw.java.entelect.core.behaviour.Operation;
+import avdw.java.entelect.core.state.BuildingType;
 import avdw.java.entelect.core.state.GameState;
+import avdw.java.entelect.core.state.PlayerType;
 import org.pmw.tinylog.Logger;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class LaneSelector extends ABehaviourTree<GameState> {
     private String filterMessage;
-    private LaneFilter[] laneFilters;
+    final LaneFilter[] laneFilters;
 
     public LaneSelector(String filterMessage, LaneFilter... laneFilters) {
         this.filterMessage = filterMessage;
         this.laneFilters = laneFilters;
+    }
+
+    public LaneSelector(String shorthand) {
+        List<LaneFilter> extractedFilters = new ArrayList();
+        String[] players = shorthand.split(";");
+        Arrays.stream(players).forEach(player -> {
+            player = player.trim();
+            PlayerType playerType;
+            switch (player.charAt(0)) {
+                case 'a':
+                case 'A':
+                    playerType = PlayerType.A;
+                    break;
+                case 'b':
+                case 'B':
+                    playerType = PlayerType.B;
+                    break;
+                default:
+                    throw new RuntimeException(shorthand);
+            }
+            String[] buildings = player.substring(2, player.length() - 1).split(",");
+            Arrays.stream(buildings).forEach(building -> {
+                building=  building.trim();
+                String[] operations = building.split(" ");
+                BuildingType buildingType;
+                switch (operations[0].trim().toUpperCase()) {
+                    case "E":
+                        buildingType = BuildingType.ENERGY;
+                        break;
+                    case "A":
+                        buildingType = BuildingType.ATTACK;
+                        break;
+                    case "D":
+                        buildingType = BuildingType.DEFENSE;
+                        break;
+                    default:
+                        throw new RuntimeException(shorthand);
+                }
+
+                Operation operation = Operation.map(operations[1].trim());
+                extractedFilters.add(new LaneFilter(playerType, buildingType, operation, Integer.parseInt(operations[2].trim())));
+            });
+        });
+
+        laneFilters = extractedFilters.toArray(new LaneFilter[]{});
+        filterMessage = shorthand;
     }
 
     @Override
@@ -68,10 +113,10 @@ public class LaneSelector extends ABehaviourTree<GameState> {
         state.selectedLanes = selectedLanes;
 
         if (selectedLanes.isEmpty()) {
-            Logger.debug(String.format("[FAILURE] Select a lane where {%s}", filterMessage));
+            Logger.debug(String.format("[FAILURE] Select a lane where %s", filterMessage));
             return Status.Failure;
         } else {
-            Logger.debug(String.format("[SUCCESS] Select a lane where {%s}", filterMessage));
+            Logger.debug(String.format("[SUCCESS] Select a lane where %s", filterMessage));
             return Status.Success;
         }
     }

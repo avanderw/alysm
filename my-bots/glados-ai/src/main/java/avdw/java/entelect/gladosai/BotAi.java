@@ -21,14 +21,20 @@ public class BotAi implements BotBehaviourTree {
     public String run() {
         ABehaviourTree behaviourTree = new ABehaviourTree.Selector(
                 new ABehaviourTree.Sequence(
-                        new DebugStatement("General ATTACK strategy"),
                         new ABehaviourTree.Selector(
-                                new LaneSelector("my energy has built up with no defence",
-                                        new LaneFilter(PlayerType.A, BuildingType.ENERGY, Operation.GREATER_THAN, 1),
-                                        new LaneFilter(PlayerType.A, BuildingType.ATTACK, Operation.LESS_THAN, 2)
-                                )
+                                new LaneSelector("A{D > 0, A < 2}"),
+                                attackWeakAttack(),
+                                new LaneSelector("A{A = 1, E > 0}; B{A = 2, E > 1, D = 0}"),
+                                attackEnergyGeneration()
                         ),
                         new BuildBuilding(BuildingType.ATTACK, Direction.RIGHT)
+                ),
+                new ABehaviourTree.Sequence(
+                        new DebugStatement("general DEFENSE strategy"),
+                        new ABehaviourTree.Selector(
+                            new LaneSelector("A{A = 0, E = 0, D = 0}; B{A = 2, E > 1, D = 0}")
+                        ),
+                        new BuildBuilding(BuildingType.DEFENSE, Direction.RIGHT)
                 ),
                 new ABehaviourTree.Sequence(
                         new DebugStatement("General ENERGY strategy"),
@@ -38,17 +44,8 @@ public class BotAi implements BotBehaviourTree {
                                 gameState.getMostExpensiveBuildingPrice()
                         ),
                         new ABehaviourTree.Selector(
-                                new LaneSelector("I have some defence and my opponent has nothing",
-                                        new LaneFilter(PlayerType.A, BuildingType.DEFENSE, Operation.GREATER_THAN, 0),
-                                        new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.EQUALS, 0),
-                                        new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.EQUALS, 0),
-                                        new LaneFilter(PlayerType.B, BuildingType.ENERGY, Operation.EQUALS, 0)
-                                ),
-                                new LaneSelector("my opponent has nothing",
-                                        new LaneFilter(PlayerType.B, BuildingType.ATTACK, Operation.EQUALS, 0),
-                                        new LaneFilter(PlayerType.B, BuildingType.DEFENSE, Operation.EQUALS, 0),
-                                        new LaneFilter(PlayerType.B, BuildingType.ENERGY, Operation.EQUALS, 0)
-                                )
+                                new LaneSelector("A{D > 0}; B{A = 0, D = 0, E = 0}"),
+                                new LaneSelector("          B{A = 0, D = 0, E = 0}")
                         ),
                         new BuildBuilding(BuildingType.ENERGY, Direction.LEFT)
                 ),
@@ -57,5 +54,42 @@ public class BotAi implements BotBehaviourTree {
         behaviourTree.process(gameState);
 
         return gameState.command;
+    }
+    ABehaviourTree attackWeakAttack() {
+        return new ABehaviourTree.Selector(
+                new ABehaviourTree.AlwaysFail(new DebugStatement("ATTACK where B has Attack = 1")),
+                new LaneSelector("A{E > 1, A = 0}; B{A = 1, D = 0, E = 3}"),
+                new LaneSelector("A{E > 0, A = 0}; B{A = 1, D = 0, E = 3}"),
+                new LaneSelector("A{       A = 0}; B{A = 1, D = 0, E = 3}"),
+                new LaneSelector("A{E > 1, A = 1}; B{A = 1, D = 0, E = 3}"),
+                new LaneSelector("A{E > 0, A = 1}; B{A = 1, D = 0, E = 3}"),
+                new LaneSelector("A{       A = 1}; B{A = 1, D = 0, E = 3}"),
+                new LaneSelector("A{E > 1, A = 0}; B{A = 1, D = 0, E = 2}"),
+                new LaneSelector("A{E > 0, A = 0}; B{A = 1, D = 0, E = 2}"),
+                new LaneSelector("A{       A = 0}; B{A = 1, D = 0, E = 2}"),
+                new LaneSelector("A{E > 1, A = 1}; B{A = 1, D = 0, E = 2}"),
+                new LaneSelector("A{E > 0, A = 1}; B{A = 1, D = 0, E = 2}"),
+                new LaneSelector("A{       A = 1}; B{A = 1, D = 0, E = 2}"),
+                new LaneSelector("A{E > 1, A = 0}; B{A = 1, D = 0, E > 0}"),
+                new LaneSelector("A{E > 0, A = 0}; B{A = 1, D = 0, E > 0}"),
+                new LaneSelector("A{       A = 0}; B{A = 1, D = 0, E > 0}"),
+                new LaneSelector("A{E > 1, A = 1}; B{A = 1, D = 0, E > 0}"),
+                new LaneSelector("A{E > 0, A = 1}; B{A = 1, D = 0, E > 0}"),
+                new LaneSelector("A{       A = 1}; B{A = 1, D = 0, E > 0}")
+        );
+    }
+
+    ABehaviourTree attackEnergyGeneration() {
+        return new ABehaviourTree.Selector(
+                new ABehaviourTree.AlwaysFail(new DebugStatement("ATTACK where B has Energy > 0")),
+                new LaneSelector("A{ A = 0, E > 0 }; B{ D = 0, E > 3, A = 0 }"),
+                new LaneSelector("A{ A = 0, E > 0 }; B{ D = 0, E = 3, A = 0 }"),
+                new LaneSelector("A{ A = 0, E > 0 }; B{ D = 0, E > 1, A = 0 }"),
+                new LaneSelector("A{ A = 0, E > 0 }; B{ D = 0, E > 0, A = 0 }"),
+                new LaneSelector("A{ A = 1, E > 0 }; B{ D = 0, E > 3, A = 0 }"),
+                new LaneSelector("A{ A = 1, E > 0 }; B{ D = 0, E = 3, A = 0 }"),
+                new LaneSelector("A{ A = 1, E > 0 }; B{ D = 0, E > 1, A = 0 }"),
+                new LaneSelector("A{ A = 1, E > 0 }; B{ D = 0, E > 0, A = 0 }")
+        );
     }
 }
