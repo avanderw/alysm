@@ -13,6 +13,7 @@
         <module>ai-core</module>
         <module>codex-ai</module>
         <module>tinker-ai</module>
+        <module>glados-ai</module>
     </modules>
 
     <properties>

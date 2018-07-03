@@ -1,7 +1,7 @@
 {
 	"author": "Andrew van der Westhuizen",
 	"email": "avanderw@gmail.com",
-	"nickName": "codex-ai",
+	"nickName": "glados-ai",
 	"botLocation": "/target",
 	"botFileName": "glados-ai-1.0-SNAPSHOT-jar-with-dependencies.jar",
 	"botLanguage": "java"
