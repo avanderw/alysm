@@ -3,8 +3,8 @@
   "game-config-file-location": "../game-config.properties",
   "verbose-mode": true,
   "max-runtime-ms": 2000,
-  "player-a": "../../codex-ai",
-  "player-b": "../../../other-bots/marco-1.7",
+  "player-a": "../../tinker-ai",
+  "player-b": "../../../other-bots/marco-2.4",
   "is-tournament-mode": false
 }
 
