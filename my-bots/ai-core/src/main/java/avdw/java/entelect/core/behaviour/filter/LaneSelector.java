@@ -76,7 +76,10 @@ public class LaneSelector extends ABehaviourTree<GameState> {
                     Set<Integer> lanes = state.getGameMap().stream()
                             .filter(c -> c.cellOwner == laneFilter.playerType)
                             .filter(c -> {
-                                if (laneFilter.count == 0 || laneFilter.operation == Operation.LESS_THAN) {
+                                if (laneFilter.count == 0 ||
+                                        laneFilter.operation == Operation.LESS_THAN ||
+                                        laneFilter.operation == Operation.ANY ||
+                                        laneFilter.operation == Operation.LESS_THAN_EQUAL) {
                                     return true;
                                 } else {
                                     return c.getBuildings().stream().anyMatch(b -> b.buildingType == laneFilter.buildingType);
@@ -92,12 +95,19 @@ public class LaneSelector extends ABehaviourTree<GameState> {
                                 switch (laneFilter.operation) {
                                     case GREATER_THAN:
                                         return laneBuildingCount > laneFilter.count;
+                                    case LESS_THAN_EQUAL:
+                                        return laneBuildingCount <= laneFilter.count.longValue();
                                     case LESS_THAN:
                                         return laneBuildingCount < laneFilter.count;
                                     case EQUALS:
                                         return laneBuildingCount == laneFilter.count.longValue();
+                                    case GREATER_THAN_EQUAL:
+                                        return laneBuildingCount >= laneFilter.count.longValue();
+                                    case ANY:
+                                        return true;
+                                    default:
+                                        throw new UnsupportedOperationException("not yet implemented");
                                 }
-                                return false;
                             })
                             .map(c -> c.y)
                             .collect(Collectors.toSet());

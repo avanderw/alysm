@@ -20,10 +20,12 @@ public class BuildBuilding extends ABehaviourTree<GameState> {
     @Override
     public Status process(GameState state) {
         if (state.selectedLanes.isEmpty()) {
+            Logger.debug(String.format("[FAILURE] Building %s on the %s", buildingType, direction));
             return Status.Failure;
         }
 
         if (state.getEnergyFor(PlayerType.A) < state.getBuildingPrice(buildingType)) {
+            Logger.debug(String.format("[FAILURE] Building %s on the %s", buildingType, direction));
             return Status.Failure;
         }
 

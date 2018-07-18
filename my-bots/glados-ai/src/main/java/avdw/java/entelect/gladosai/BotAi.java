@@ -21,75 +21,128 @@ public class BotAi implements BotBehaviourTree {
     public String run() {
         ABehaviourTree behaviourTree = new ABehaviourTree.Selector(
                 new ABehaviourTree.Sequence(
+                        new DebugStatement("special DEFENSE strategy"),
                         new ABehaviourTree.Selector(
-                                new LaneSelector("A{D > 0, A < 2}"),
-                                attackWeakAttack(),
-                                new LaneSelector("A{A = 1, E > 0}; B{A = 2, E > 1, D = 0}"),
-                                attackEnergyGeneration()
+                                new LaneSelector("A{ A = 0, D = 0, E = 0 }; B{ A = 3, D = 0, E = 2 }"),
+                                new LaneSelector("A{ A = 0, D = 0, E = 0 }; B{ A = 2, D = 0, E = 2 }")
+                        ),
+                        new BuildBuilding(BuildingType.DEFENSE, Direction.RIGHT)
+                ),
+                new ABehaviourTree.Sequence(
+                        new DebugStatement("general ATTACK strategy"),
+                        new ABehaviourTree.Selector(
+                                new LaneSelector("A{ A < 2, D > 0, E * 0 }; B{ A * 0, D * 0, E * 0 }"),
+
+                                new ABehaviourTree.AlwaysFail(new DebugStatement("ATTACK where B has Energy > 1 and no defense")),
+                                new LaneSelector("A{ A = 0, D = 0, E > 0 }; B{ A = 0, D = 0, E > 3 }"),
+                                new LaneSelector("A{ A = 0, D = 0, E = 0 }; B{ A = 0, D = 0, E > 3 }"),
+                                new LaneSelector("A{ A = 0, D = 0, E > 0 }; B{ A = 0, D = 0, E = 3 }"),
+                                new LaneSelector("A{ A = 0, D = 0, E = 0 }; B{ A = 0, D = 0, E = 3 }"),
+                                new LaneSelector("A{ A = 0, D = 0, E > 0 }; B{ A = 0, D = 0, E = 2 }"),
+                                new LaneSelector("A{ A = 0, D = 0, E = 0 }; B{ A = 0, D = 0, E = 2 }"),
+                                
+                                new ABehaviourTree.AlwaysFail(new DebugStatement("ATTACK where B has Attack = 1")),
+                                new LaneSelector("A{ A = 0, D = 0, E > 1 }; B{ A = 1, D = 0, E = 3 }"),
+                                new LaneSelector("A{ A = 0, D = 0, E = 1 }; B{ A = 1, D = 0, E = 3 }"),
+                                new LaneSelector("A{ A = 0, D = 0, E = 0 }; B{ A = 1, D = 0, E = 3 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E > 1 }; B{ A = 1, D = 0, E = 3 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E = 1 }; B{ A = 1, D = 0, E = 3 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E = 0 }; B{ A = 1, D = 0, E = 3 }"),
+
+                                new LaneSelector("A{ A = 0, D = 0, E > 1 }; B{ A = 1, D = 0, E = 2 }"),
+                                new LaneSelector("A{ A = 0, D = 0, E = 1 }; B{ A = 1, D = 0, E = 2 }"),
+                                new LaneSelector("A{ A = 0, D = 0, E * 0 }; B{ A = 1, D = 0, E = 2 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E > 1 }; B{ A = 1, D = 0, E = 2 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E = 1 }; B{ A = 1, D = 0, E = 2 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E * 0 }; B{ A = 1, D = 0, E = 2 }"),
+
+                                new LaneSelector("A{ A = 0, D = 0, E > 1 }; B{ A = 1, D = 0, E * 0 }"),
+                                new LaneSelector("A{ A = 0, D = 0, E = 1 }; B{ A = 1, D = 0, E * 0 }"),
+                                new LaneSelector("A{ A = 0, D = 0, E = 0 }; B{ A = 1, D = 0, E * 0 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E > 1 }; B{ A = 1, D = 0, E * 0 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E = 1 }; B{ A = 1, D = 0, E * 0 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E = 0 }; B{ A = 1, D = 0, E * 0 }"),
+                                
+                                new ABehaviourTree.AlwaysFail(new DebugStatement("ATTACK where B has Attack = 2")),
+                                new LaneSelector("A{ A = 1, D = 0, E > 0 }; B{ A = 2, D = 0, E > 1 }"),
+
+                                new ABehaviourTree.AlwaysFail(new DebugStatement("ATTACK where B has Energy > 0")),
+                                new LaneSelector("A{ A = 1, D = 0, E > 0 }; B{ A = 0, D = 0, E > 3 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E = 0 }; B{ A = 0, D = 0, E > 3 }"),
+
+                                new LaneSelector("A{ A = 1, D = 0, E > 0 }; B{ A = 0, D = 0, E = 3 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E = 0 }; B{ A = 0, D = 0, E = 3 }"),
+
+                                new LaneSelector("A{ A = 1, D = 0, E > 0 }; B{ A = 0, D = 0, E = 2 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E = 0 }; B{ A = 0, D = 0, E = 2 }"),
+
+                                new LaneSelector("A{ A = 0, D = 0, E > 0 }; B{ A = 0, D = 0, E = 1 }"),
+                                new LaneSelector("A{ A = 0, D = 0, E = 0 }; B{ A = 0, D = 0, E = 1 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E > 0 }; B{ A = 0, D = 0, E = 1 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E = 0 }; B{ A = 0, D = 0, E = 1 }"),
+
+                                new LaneSelector("A{ A = 1, D = 0, E > 0 }; B{ A = 0, D = 0, E > 3 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E > 0 }; B{ A = 0, D = 0, E = 3 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E > 0 }; B{ A = 0, D = 0, E = 2 }"),
+                                new LaneSelector("A{ A = 1, D = 0, E > 0 }; B{ A = 0, D = 0, E = 1 }")
                         ),
                         new BuildBuilding(BuildingType.ATTACK, Direction.RIGHT)
                 ),
                 new ABehaviourTree.Sequence(
                         new DebugStatement("general DEFENSE strategy"),
                         new ABehaviourTree.Selector(
-                            new LaneSelector("A{A = 0, E = 0, D = 0}; B{A = 2, E > 1, D = 0}")
+                                new LaneSelector("A{ A = 0, D = 0, E = 0 }; B{ A = 2, D = 0, E > 1 }"),
+                                new LaneSelector("A{ A = 0, D = 0, E > 0 }; B{ A > 0, D = 1, E > 0 }")
                         ),
                         new BuildBuilding(BuildingType.DEFENSE, Direction.RIGHT)
                 ),
                 new ABehaviourTree.Sequence(
-                        new DebugStatement("General ENERGY strategy"),
-                        new CompareGuard("Is my energy generation less than the most expensive building",
+                        new DebugStatement("general ENERGY strategy"),
+                        new CompareGuard("Is my energy generation less than the attack building price",
                                 gameState.getEnergyGenerationFor(PlayerType.A),
                                 Operation.LESS_THAN,
-                                gameState.getMostExpensiveBuildingPrice()
+                                gameState.getBuildingPrice(BuildingType.ATTACK)
                         ),
                         new ABehaviourTree.Selector(
-                                new LaneSelector("A{D > 0}; B{A = 0, D = 0, E = 0}"),
-                                new LaneSelector("          B{A = 0, D = 0, E = 0}")
+                                new LaneSelector("A{ A > 0, D > 0, E = 0 }; B{ A = 0, D = 0, E = 0 }"),
+                                new LaneSelector("A{ A = 0, D > 0, E = 0 }; B{ A = 0, D = 0, E = 0 }"),
+                                new LaneSelector("A{ A > 0, D = 0, E = 0 }; B{ A = 0, D = 0, E = 0 }"),
+                                new LaneSelector("A{ A = 0, D = 0, E = 0 }; B{ A = 0, D = 0, E = 0 }"),
+
+                                new LaneSelector("A{ A * 0, D * 0, E < 3 }; B{ A = 0, D = 0, E = 0 }"),
+                                new LaneSelector("A{ A * 0, D * 0, E < 3 }; B{ A = 0, D = 0, E = 1 }"),
+                                new LaneSelector("A{ A * 0, D * 0, E < 3 }; B{ A = 0, D = 0, E = 2 }"),
+                                new LaneSelector("A{ A * 0, D * 0, E < 3 }; B{ A = 0, D = 0, E = 3 }"),
+                                new LaneSelector("A{ A * 0, D * 0, E < 3 }; B{ A = 0, D = 0, E > 3 }")
                         ),
                         new BuildBuilding(BuildingType.ENERGY, Direction.LEFT)
+                ),
+                new ABehaviourTree.Sequence(
+                        new DebugStatement("reinforce ATTACK to 2"),
+                        new ABehaviourTree.Selector(
+                                new LaneSelector("A{ A < 2, D * 0, E * 0 }; B{ A * 0, D * 0, E * 0 }")
+                        ),
+                        new BuildBuilding(BuildingType.ATTACK, Direction.RIGHT)
+                ),
+                new ABehaviourTree.Sequence(
+                        new DebugStatement("reinforce ENERGY to 2"),
+                        new ABehaviourTree.Selector(
+                                new LaneSelector("A{ A * 0, D * 0, E = 0 }; B{ A * 0, D * 0, E * 0 }"),
+                                new LaneSelector("A{ A * 0, D * 0, E = 1 }; B{ A * 0, D * 0, E * 0 }")
+                        ),
+                        new BuildBuilding(BuildingType.ENERGY, Direction.LEFT)
+                ),
+                new ABehaviourTree.Sequence(
+                        new DebugStatement("reinforce DEFENSE to 1"),
+                        new ABehaviourTree.Selector(
+                                new LaneSelector("A{ A * 0, D = 0, E * 0 }; B{ A * 0, D * 0, E * 0 }")
+                        ),
+                        new BuildBuilding(BuildingType.DEFENSE, Direction.RIGHT)
                 ),
                 new DoNothing()
         );
         behaviourTree.process(gameState);
 
         return gameState.command;
-    }
-    ABehaviourTree attackWeakAttack() {
-        return new ABehaviourTree.Selector(
-                new ABehaviourTree.AlwaysFail(new DebugStatement("ATTACK where B has Attack = 1")),
-                new LaneSelector("A{E > 1, A = 0}; B{A = 1, D = 0, E = 3}"),
-                new LaneSelector("A{E > 0, A = 0}; B{A = 1, D = 0, E = 3}"),
-                new LaneSelector("A{       A = 0}; B{A = 1, D = 0, E = 3}"),
-                new LaneSelector("A{E > 1, A = 1}; B{A = 1, D = 0, E = 3}"),
-                new LaneSelector("A{E > 0, A = 1}; B{A = 1, D = 0, E = 3}"),
-                new LaneSelector("A{       A = 1}; B{A = 1, D = 0, E = 3}"),
-                new LaneSelector("A{E > 1, A = 0}; B{A = 1, D = 0, E = 2}"),
-                new LaneSelector("A{E > 0, A = 0}; B{A = 1, D = 0, E = 2}"),
-                new LaneSelector("A{       A = 0}; B{A = 1, D = 0, E = 2}"),
-                new LaneSelector("A{E > 1, A = 1}; B{A = 1, D = 0, E = 2}"),
-                new LaneSelector("A{E > 0, A = 1}; B{A = 1, D = 0, E = 2}"),
-                new LaneSelector("A{       A = 1}; B{A = 1, D = 0, E = 2}"),
-                new LaneSelector("A{E > 1, A = 0}; B{A = 1, D = 0, E > 0}"),
-                new LaneSelector("A{E > 0, A = 0}; B{A = 1, D = 0, E > 0}"),
-                new LaneSelector("A{       A = 0}; B{A = 1, D = 0, E > 0}"),
-                new LaneSelector("A{E > 1, A = 1}; B{A = 1, D = 0, E > 0}"),
-                new LaneSelector("A{E > 0, A = 1}; B{A = 1, D = 0, E > 0}"),
-                new LaneSelector("A{       A = 1}; B{A = 1, D = 0, E > 0}")
-        );
-    }
-
-    ABehaviourTree attackEnergyGeneration() {
-        return new ABehaviourTree.Selector(
-                new ABehaviourTree.AlwaysFail(new DebugStatement("ATTACK where B has Energy > 0")),
-                new LaneSelector("A{ A = 0, E > 0 }; B{ D = 0, E > 3, A = 0 }"),
-                new LaneSelector("A{ A = 0, E > 0 }; B{ D = 0, E = 3, A = 0 }"),
-                new LaneSelector("A{ A = 0, E > 0 }; B{ D = 0, E > 1, A = 0 }"),
-                new LaneSelector("A{ A = 0, E > 0 }; B{ D = 0, E > 0, A = 0 }"),
-                new LaneSelector("A{ A = 1, E > 0 }; B{ D = 0, E > 3, A = 0 }"),
-                new LaneSelector("A{ A = 1, E > 0 }; B{ D = 0, E = 3, A = 0 }"),
-                new LaneSelector("A{ A = 1, E > 0 }; B{ D = 0, E > 1, A = 0 }"),
-                new LaneSelector("A{ A = 1, E > 0 }; B{ D = 0, E > 0, A = 0 }")
-        );
     }
 }

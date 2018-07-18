@@ -63,7 +63,7 @@ public class BotAiTest {
     @Test
     public void test2018070323444640() {
         BotAi botAi = new BotAi(State.read("./src/test/resources/2018070323444640.json"));
-        assertEquals("6,0,1", botAi.run());
+        assertEquals("7,7,0", botAi.run());
     }
 
     @Test
@@ -75,7 +75,7 @@ public class BotAiTest {
     @Test
     public void test2018070323444636() {
         BotAi botAi = new BotAi(State.read("./src/test/resources/2018070323444636.json"));
-        assertEquals("6,7,1", botAi.run());
+        assertEquals("7,0,0", botAi.run());
     }
 
     @Test
@@ -85,9 +85,60 @@ public class BotAiTest {
     }
 
     @Test
-    @Ignore
-    public void test2018070400052444() {
-        BotAi botAi = new BotAi(State.read("./src/test/resources/2018070400052444.json"));
-        assertEquals("0,0,0", botAi.run());
+    public void test2018071818232709() {
+        BotAi botAi = new BotAi(State.read("./src/test/resources/2018071818232709.json"));
+        assertEquals("7,5,1", botAi.run());
+    }
+
+
+    @Test
+    public void test2018071818582760() {
+        BotAi botAi = new BotAi(State.read("./src/test/resources/2018071818582760.json"));
+        String output = botAi.run();
+        assertFalse(output.endsWith("2"));
+        assertEquals("6,7,1", output);
+    }
+
+    @Test
+    public void test2018071818575535() {
+        BotAi botAi = new BotAi(State.read("./src/test/resources/2018071818575535.json"));
+        assertEquals("7,0,0", botAi.run());
+    }
+
+    @Test
+    public void test2018071818591823() {
+        BotAi botAi = new BotAi(State.read("./src/test/resources/2018071818591823.json"));
+        assertEquals("6,4,1", botAi.run());
+    }
+
+    @Test
+    public void test2018071818591824() {
+        BotAi botAi = new BotAi(State.read("./src/test/resources/2018071818591824.json"));
+        assertEquals("7,0,0", botAi.run());
+    }
+
+    @Test
+    public void test2018071820033424() {
+        BotAi botAi = new BotAi(State.read("./src/test/resources/2018071820033424.json"));
+        assertEquals("7,3,1", botAi.run());
+    }
+
+    @Test
+    public void test2018071820040318() {
+        BotAi botAi = new BotAi(State.read("./src/test/resources/2018071820040318.json"));
+        assertEquals("7,0,1", botAi.run());
+    }
+
+    @Test
+    public void test2018071820040334() {
+        BotAi botAi = new BotAi(State.read("./src/test/resources/2018071820040334.json"));
+        assertEquals("7,5,1", botAi.run());
+    }
+
+
+    @Test
+    public void test2018071820330763() {
+        BotAi botAi = new BotAi(State.read("./src/test/resources/2018071820330763.json"));
+        assertTrue(botAi.run().endsWith("1"));
     }
 }

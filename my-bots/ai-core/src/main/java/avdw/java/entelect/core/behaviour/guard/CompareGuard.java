@@ -28,26 +28,40 @@ public class CompareGuard extends ABehaviourTree<GameState> {
                 if (left > right) {
                     isSuccess = Boolean.TRUE;
                 }
+                break;
             case EQUALS:
                 if (left == right) {
                     isSuccess = Boolean.TRUE;
                 }
-            case LESS_THAN_OR_EQUALS:
+                break;
+            case LESS_THAN_EQUAL:
                 if (left <= right) {
                     isSuccess = Boolean.TRUE;
                 }
+                break;
             case LESS_THAN:
                 if (left < right) {
                     isSuccess = Boolean.TRUE;
                 }
+                break;
+            case GREATER_THAN_EQUAL:
+                if (left >= right) {
+                    isSuccess = Boolean.TRUE;
+                }
+                break;
+            case ANY:
+                isSuccess = Boolean.TRUE;
+                break;
+            default:
+                throw new UnsupportedOperationException("not yet implemented");
         }
 
         if (isSuccess) {
-            Logger.debug(String.format("[PASS] %s ",filterMessage));
+            Logger.debug(String.format("[PASS] %s { %s %s %s }", filterMessage, left, operation.key, right));
             return Status.Success;
         } else {
 
-            Logger.debug(String.format("[FAIL] %s ",filterMessage));
+            Logger.debug(String.format("[FAIL] %s { %s %s %s }", filterMessage, left, operation.key, right));
             return Status.Failure;
         }
     }

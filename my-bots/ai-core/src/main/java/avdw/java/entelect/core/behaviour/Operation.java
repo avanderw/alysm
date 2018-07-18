@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum Operation {
-    GREATER_THAN(">"), EQUALS("="), LESS_THAN_OR_EQUALS("<="), LESS_THAN("<");
+    GREATER_THAN(">"), EQUALS("="), LESS_THAN_EQUAL("<="), LESS_THAN("<"), GREATER_THAN_EQUAL(">="), ANY("*");
 
     private static Map<String, Operation> mappings = new HashMap();
-    private String key;
+    public String key;
 
     Operation(String key) {
         this.key = key;
