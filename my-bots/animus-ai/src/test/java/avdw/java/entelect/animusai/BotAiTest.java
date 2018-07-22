@@ -9,7 +9,6 @@ import org.pmw.tinylog.Level;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Ignore
 public class BotAiTest {
     @BeforeClass
     public static void beforeClass() {

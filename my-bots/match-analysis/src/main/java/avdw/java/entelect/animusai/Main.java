@@ -55,18 +55,33 @@ public class Main {
                             });
                         });
             });
-            System.out.println();
-            System.out.println(replayDir.getName());
-            System.out.println(String.format("%5s | %5s | %5s | %8s | %5s | %5s",
-                    "Round", "ABank", "BBank", "Total", "Attack", "Built"));
 
             Long aSTotal = 0L;
             Long bSTotal = 0L;
-            for (Attributes attributes : attributesList) {
+            for (int i = 0; i < attributesList.size(); i++) {
+                Attributes prevAttributes;
+                if (i == 0) {
+                    prevAttributes = attributesList.get(0);
+                } else {
+                    prevAttributes = attributesList.get(i - 1);
+                }
+
+                Attributes attributes = attributesList.get(i);
                 attributes.playerATotalIncome = aSTotal += attributes.playerAIncome;
                 attributes.playerBTotalIncome = bSTotal += attributes.playerBIncome;
+                attributes.energyRoundDiff = attributes.playerAEnergy - prevAttributes.playerAEnergy;
+                attributes.attackRoundDiff = attributes.playerAAttack - prevAttributes.playerAAttack;
             }
-            attributesList.forEach(System.out::println);
+
+            System.out.println();
+            System.out.println(replayDir.getName());
+            Integer pagingSize = 15;
+            Integer index = 0;
+            while (index < attributesList.size()) {
+                System.out.println(String.format("%10s | %10s | %10s | %10s | %10s | %10s | %10s | %10s | %10s",
+                        "Round", "Income", "ATT Diff", "NRG Diff", "ATT Delta", "NRG Delta", "A Health", "B Health", "Built"));
+                attributesList.subList(index, Math.min(index+=pagingSize,attributesList.size())).forEach(System.out::println);
+            }
         });
     }
 }
@@ -77,14 +92,21 @@ class Attributes {
     final Integer playerBStorage;
     final Integer playerAAttack;
     final Integer playerBAttack;
+    final Integer playerAEnergy;
+    final Integer playerBEnergy;
+    final Integer playerAHealth;
+    final Integer playerBHealth;
     final Long playerAIncome;
     final Long playerBIncome;
     Long playerATotalIncome;
     Long playerBTotalIncome;
     String built;
+    Integer energyRoundDiff;
+    Integer attackRoundDiff;
 
     public Attributes(GameState state) {
         round = state.gameDetails.round;
+
         playerAStorage = state.getPlayers().stream()
                 .filter(player -> player.playerType == PlayerType.A)
                 .mapToInt(player -> player.energy)
@@ -103,6 +125,15 @@ class Attributes {
                 .mapToLong(player -> state.getEnergyGenerationFor(PlayerType.B))
                 .sum();
 
+        playerAHealth = state.getPlayers().stream()
+                .filter(player -> player.playerType == PlayerType.A)
+                .mapToInt(player -> player.health)
+                .sum();
+        playerBHealth = state.getPlayers().stream()
+                .filter(player -> player.playerType == PlayerType.B)
+                .mapToInt(player ->  player.health)
+                .sum();
+
         playerAAttack = state.getGameMap().stream()
                 .filter(cell -> cell.cellOwner == PlayerType.A)
                 .map(cell -> cell.getBuildings().stream().findFirst())
@@ -116,11 +147,27 @@ class Attributes {
                 .filter(building -> building.isPresent())
                 .mapToInt(building -> building.get().buildingType == BuildingType.ATTACK ? 1 : 0)
                 .sum();
+
+        playerAEnergy = state.getGameMap().stream()
+                .filter(cell -> cell.cellOwner == PlayerType.A)
+                .map(cell -> cell.getBuildings().stream().findFirst())
+                .filter(building -> building.isPresent())
+                .mapToInt(building -> building.get().buildingType == BuildingType.ENERGY ? 1 : 0)
+                .sum();
+
+        playerBEnergy = state.getGameMap().stream()
+                .filter(cell -> cell.cellOwner == PlayerType.B)
+                .map(cell -> cell.getBuildings().stream().findFirst())
+                .filter(building -> building.isPresent())
+                .mapToInt(building -> building.get().buildingType == BuildingType.ENERGY ? 1 : 0)
+                .sum();
     }
 
     @Override
     public String toString() {
-        return String.format("%5s | %5s | %5s | %5s | %5s | %5s",
-                round, playerAStorage, playerBStorage, playerATotalIncome - playerBTotalIncome, playerAAttack - playerBAttack, built);
+        return String.format("%10s | %10s | %10s | %10s | %10s | %10s | %10s | %10s | %10s",
+                round, playerATotalIncome - playerBTotalIncome,
+                playerAAttack - playerBAttack, playerAEnergy - playerBEnergy, attackRoundDiff,
+                energyRoundDiff, playerAHealth, playerBHealth,built);
     }
 }

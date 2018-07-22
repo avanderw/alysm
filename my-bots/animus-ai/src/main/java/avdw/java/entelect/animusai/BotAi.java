@@ -40,14 +40,14 @@ public class BotAi implements BotBehaviourTree {
                                         ),
                                         new BuildBuilding(BuildingType.ATTACK, Direction.RIGHT)
                                 ),
-                                new ABehaviourTree.Sequence(
+                                new ABehaviourTree.Sequence(// cooldown on construction check ATTACK place
                                         new DebugStatement("DEFENSE strategy"),
                                         new ABehaviourTree.Selector(
-                                                new SortedLaneSelector("A{ 6A[00], 1D[00], 5E[43] }; B{ 3A[32], 2D[00], 4E[30] }")
+                                                new SortedLaneSelector("A{ 6A[00], 1D[00], 5E[20] }; B{ 3A[43], 2D[00], 4E[30] }")
                                         ),
                                         new BuildBuilding(BuildingType.DEFENSE, Direction.RIGHT)
                                 ),
-                                new ABehaviourTree.Sequence(
+                                new ABehaviourTree.Sequence(// "A{ A = 1, D = 0, E = 2 }; B{ A = 1, D = 0, E = 2 }" (cooldown check [lowest cooldown wins])
                                         new DebugStatement("ATTACK strategy"),
                                         new SortedLaneSelector("A{ 2A[01], 6D[10], 5E[30] }; B{ 4A[20], 1D[01], 3E[30] }"),
                                         new BuildBuilding(BuildingType.ATTACK, Direction.RIGHT)
