@@ -130,4 +130,9 @@ public class LaneSelector extends ABehaviourTree<GameState> {
             return Status.Success;
         }
     }
+
+    @Override
+    public String toString() {
+        return filterMessage;
+    }
 }

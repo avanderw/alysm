@@ -36,17 +36,26 @@ public class BuildBuilding extends ABehaviourTree<GameState> {
             switch (direction) {
                 case LEFT:
                     cell = state.getGameMap().stream()
-                            .filter(c->c.cellOwner == PlayerType.A)
+                            .filter(c -> c.cellOwner == PlayerType.A)
                             .filter(c -> c.y == lane)
                             .filter(c -> c.getBuildings().isEmpty())
                             .min(Comparator.comparingInt(c -> c.x));
                     break;
                 case RIGHT:
-                    cell = state.getGameMap().stream()
-                            .filter(c->c.cellOwner == PlayerType.A)
-                            .filter(c -> c.y == lane)
-                            .filter(c -> c.getBuildings().isEmpty())
-                            .max(Comparator.comparingInt(c -> c.x));
+//                    if (buildingType != BuildingType.ATTACK) {
+                        cell = state.getGameMap().stream()
+                                .filter(c -> c.cellOwner == PlayerType.A)
+                                .filter(c -> c.y == lane)
+                                .filter(c -> c.getBuildings().isEmpty())
+                                .max(Comparator.comparingInt(c -> c.x));
+//                    } else {
+//                        cell = state.getGameMap().stream()
+//                                .filter(c -> c.cellOwner == PlayerType.A)
+//                                .filter(c -> c.x < 7)
+//                                .filter(c -> c.y == lane)
+//                                .filter(c -> c.getBuildings().isEmpty())
+//                                .max(Comparator.comparingInt(c -> c.x));
+//                    }
                     break;
             }
         }

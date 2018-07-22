@@ -1,0 +1,10 @@
+{
+  "round-state-output-location": "../replays",
+  "game-config-file-location": "../game-config.properties",
+  "verbose-mode": true,
+  "max-runtime-ms": 2000,
+  "player-a": "../../animus-ai",
+  "player-b": "../../tinker-ai",
+  "is-tournament-mode": false
+}
+

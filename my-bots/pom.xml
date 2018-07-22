@@ -14,6 +14,7 @@
         <module>codex-ai</module>
         <module>tinker-ai</module>
         <module>glados-ai</module>
+        <module>animus-ai</module>
     </modules>
 
     <properties>

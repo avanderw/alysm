@@ -26,7 +26,7 @@ public abstract class ABehaviourTree<S> {
     public abstract Status process(S state);
 
     /**
-     * Fallback nodes are used to find and execute the first child that does not
+     * Fallback nodes are used to find and execute the lower child that does not
      * fail. A fallback node will return immediately with a status code of
      * success or running when one of its children returns success or running.
      * The children are ticked in order of importance, from left to right.
@@ -60,7 +60,7 @@ public abstract class ABehaviourTree<S> {
     }
 
     /**
-     * Sequence nodes are used to find and execute the first child that has not
+     * Sequence nodes are used to find and execute the lower child that has not
      * yet succeeded. A sequence node will return immediately with a status code
      * of failure or running when one of its children returns failure or
      * running. The children are ticked in order, from left to right.
