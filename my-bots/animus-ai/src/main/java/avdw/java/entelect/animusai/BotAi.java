@@ -19,6 +19,9 @@ public class BotAi implements BotBehaviourTree {
         this.gameState = gameState;
     }
 
+    // analyse how long a tower lives, fires, given lane info, then score placement
+    // top 3 energy, attack placements
+    // top 3 energy, attack enemy placements most damage
     public String run() {
         ABehaviourTree behaviourTree = new ABehaviourTree.Selector(
                 new ABehaviourTree.Sequence(

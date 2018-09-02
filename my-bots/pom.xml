@@ -15,6 +15,7 @@
         <module>tinker-ai</module>
         <module>glados-ai</module>
         <module>animus-ai</module>
+        <module>jarvis-ai</module>
     </modules>
 
     <properties>
