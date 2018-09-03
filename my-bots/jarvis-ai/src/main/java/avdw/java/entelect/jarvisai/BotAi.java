@@ -2,14 +2,9 @@ package avdw.java.entelect.jarvisai;
 
 import avdw.java.entelect.core.api.BotBehaviourTree;
 import avdw.java.entelect.core.behaviour.ABehaviourTree;
-import avdw.java.entelect.core.behaviour.Operation;
-import avdw.java.entelect.core.behaviour.action.BuildBuilding;
-import avdw.java.entelect.core.behaviour.action.DebugStatement;
-import avdw.java.entelect.core.behaviour.action.DoNothing;
-import avdw.java.entelect.core.behaviour.filter.LaneFilter;
-import avdw.java.entelect.core.behaviour.filter.LaneSelector;
+import avdw.java.entelect.core.behaviour.action.*;
 import avdw.java.entelect.core.behaviour.filter.SortedLaneSelector;
-import avdw.java.entelect.core.behaviour.guard.CompareGuard;
+import avdw.java.entelect.core.behaviour.guard.Guard;
 import avdw.java.entelect.core.state.*;
 
 public class BotAi implements BotBehaviourTree {
@@ -27,15 +22,24 @@ public class BotAi implements BotBehaviourTree {
         ABehaviourTree behaviourTree = new ABehaviourTree.Selector(
                 new ABehaviourTree.Sequence(
                         new DebugStatement("IRON CURTAIN"),
-                        new Guard(!gameState.isIronCurtainActive(PlayerType.A)),
-                        new Guard(gameState.isIronCurtainAvailable(PlayerType.A)),
-                        new Guard("A{E} >= $", gameState.getBuildingPrice(BuildingType.IRON_CURTAIN)),
-                        new BuildIronCurtain()
+                        new Guard(!gameState.isIronCurtainActive(PlayerType.A), "IRON_CURTAIN is not active"),
+                        new Guard(gameState.isIronCurtainAvailable(PlayerType.A), "IRON_CURTAIN is available"),
+                        new ABehaviourTree.Selector(
+                                new ABehaviourTree.Sequence(
+                                        new Guard("A{E} < $", gameState.getBuildingPrice(BuildingType.IRON_CURTAIN)),
+                                        new Guard("A{E} >= $", gameState.getBuildingPrice(BuildingType.IRON_CURTAIN) - 1 * gameState.getEnergyGenerationFor(PlayerType.A)),
+                                        new DoNothing()
+                                ),
+                                new ABehaviourTree.Sequence(
+                                        new Guard("A{E} >= $", gameState.getBuildingPrice(BuildingType.IRON_CURTAIN)),
+                                        new BuildIronCurtain()
+                                )
+                        )
                 ),
                 new ABehaviourTree.Sequence(
                         new DebugStatement("TESLA TOWER"),
-                        new Guard("A{T} <= $", gameState.maxTesla()),
-                        new Guard("A{E} >= $", gameState.getBuildingPrice(BuildingType.TESLA_TOWER)),
+                        new Guard("A{T} <= $", gameState.maxTeslaTowers()),
+                        new Guard("A{E} >= $", gameState.getBuildingPrice(BuildingType.TESLA_TOWER) + gameState.getTeslaFirePrice(PlayerType.A)),
                         new BuildTesla()
                 ),
                 new ABehaviourTree.Sequence(

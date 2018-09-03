@@ -1,4 +1,4 @@
-package avdw.java.entelect.animusai;
+package avdw.java.entelect.jarvisai;
 
 import avdw.java.entelect.core.state.State;
 import org.junit.BeforeClass;

@@ -62,4 +62,20 @@ public class GameState {
                 .filter(c->c.getBuildings().stream().anyMatch(building->building.buildingType == buildingType))
                 .count();
     }
+
+    public Boolean isIronCurtainActive(PlayerType playerType) {
+        throw new UnsupportedOperationException("not implemented");
+    }
+
+    public Boolean isIronCurtainAvailable(PlayerType playerType) {
+        throw new UnsupportedOperationException("not implemented");
+    }
+
+    public Integer maxTeslaTowers() {
+        throw new UnsupportedOperationException("not implemented");
+    }
+
+    public Integer getTeslaFirePrice(PlayerType playerType) {
+        throw new UnsupportedOperationException("not implemented");
+    }
 }
