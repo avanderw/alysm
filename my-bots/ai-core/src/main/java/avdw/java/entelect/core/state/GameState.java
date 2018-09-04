@@ -9,15 +9,15 @@ public class GameState {
     protected CellStateContainer[][] gameMap;
     public Set<Integer> selectedLanes = new HashSet();
 
-    public List<Player> getPlayers(){
+    public List<Player> getPlayers() {
         return new ArrayList<Player>(Arrays.asList(players));
     }
 
-    public List<CellStateContainer> getGameMap(){
+    public List<CellStateContainer> getGameMap() {
         ArrayList<CellStateContainer> list = new ArrayList<CellStateContainer>();
 
-        for (int i = 0; i < gameMap.length; i++){
-            for (int j = 0; j < gameMap[i].length; j ++){
+        for (int i = 0; i < gameMap.length; i++) {
+            for (int j = 0; j < gameMap[i].length; j++) {
                 list.add(gameMap[i][j]);
             }
         }
@@ -25,7 +25,7 @@ public class GameState {
         return list;
     }
 
-    public Long getEnergyFor(PlayerType playerType){
+    public Long getEnergyFor(PlayerType playerType) {
         return (long) getPlayers().stream()
                 .filter(p -> p.playerType == playerType)
                 .mapToInt(p -> p.energy)
@@ -34,11 +34,11 @@ public class GameState {
 
     public Long getEnergyGenerationFor(PlayerType playerType) {
         return (long) gameDetails.roundIncomeEnergy + getGameMap().stream()
-                .filter(cell-> cell.cellOwner == playerType)
-                .map(cell->cell.buildings.stream().findFirst())
-                .filter(building->building.isPresent())
-                .filter(building->building.get().buildingType == BuildingType.ENERGY)
-                .mapToInt(building->building.get().energyGeneratedPerTurn)
+                .filter(cell -> cell.cellOwner == playerType)
+                .map(cell -> cell.buildings.stream().findFirst())
+                .filter(building -> building.isPresent())
+                .filter(building -> building.get().buildingType == BuildingType.ENERGY)
+                .mapToInt(building -> building.get().energyGeneratedPerTurn)
                 .sum();
     }
 
@@ -46,10 +46,10 @@ public class GameState {
         return (long) gameDetails.buildingPrices.get(buildingType);
     }
 
-    public Long getMostExpensiveBuildingPrice(){
+    public Long getMostExpensiveBuildingPrice() {
         int buildingPrice = 0;
-        for (Integer value : gameDetails.buildingPrices.values()){
-            if (value > buildingPrice){
+        for (Integer value : gameDetails.buildingPrices.values()) {
+            if (value > buildingPrice) {
                 buildingPrice = value;
             }
         }
@@ -58,24 +58,32 @@ public class GameState {
 
     public long countBuildingsFor(PlayerType playerType, BuildingType buildingType) {
         return getGameMap().stream()
-                .filter(c->c.cellOwner == playerType)
-                .filter(c->c.getBuildings().stream().anyMatch(building->building.buildingType == buildingType))
+                .filter(c -> c.cellOwner == playerType)
+                .filter(c -> c.getBuildings().stream().anyMatch(building -> building.buildingType == buildingType))
                 .count();
     }
 
     public Boolean isIronCurtainActive(PlayerType playerType) {
-        throw new UnsupportedOperationException("not implemented");
+        return getPlayers().stream()
+                .filter(p -> p.playerType == playerType)
+                .map(p->p.isIronCurtainActive).findAny().get();
     }
 
     public Boolean isIronCurtainAvailable(PlayerType playerType) {
-        throw new UnsupportedOperationException("not implemented");
+        return getPlayers().stream()
+                .filter(p-> p.playerType == playerType)
+                .map(p->p.ironCurtainAvailable).findAny().get();
     }
 
     public Integer maxTeslaTowers() {
-        throw new UnsupportedOperationException("not implemented");
+        return 2;
     }
 
     public Integer getTeslaFirePrice(PlayerType playerType) {
-        throw new UnsupportedOperationException("not implemented");
+        return 100;
+    }
+
+    public Integer getIronCurtainPrice() {
+        return gameDetails.ironCurtainStats.price;
     }
 }

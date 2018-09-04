@@ -2,7 +2,6 @@ package avdw.java.entelect.jarvisai;
 
 import avdw.java.entelect.core.api.BotBehaviourTree;
 import avdw.java.entelect.core.state.State;
-import avdw.java.entelect.jarvisai.BotAi;
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.Level;
 import org.pmw.tinylog.Logger;
@@ -21,8 +20,14 @@ public class Main {
                 .level(Level.DEBUG)
                 .activate();
 
-        BotBehaviourTree ai = new BotAi(State.read(STATE_FILE_NAME));
-        writeBotResponseToFile(ai.run());
+        Logger.info("started");
+        try {
+            BotBehaviourTree ai = new BotAi(State.read(STATE_FILE_NAME));
+            writeBotResponseToFile(ai.run());
+        } catch (Exception e) {
+            Logger.error(e);
+            writeBotResponseToFile("0,0,0");
+        }
     }
 
     private static void writeBotResponseToFile(String command) {

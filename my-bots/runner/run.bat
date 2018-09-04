@@ -3,7 +3,7 @@ rmdir /S /Q replays
 for /f "Delims=" %%i in ('dir /ad /b play*') do (
     cd "%%i"
 	echo %%i
-    java -jar ../game-runner-3.0.0-jar-with-dependencies.jar > match.log 2> error.log
+    java -jar ../game-runner-3.0.1-jar-with-dependencies.jar > match.log 2> error.log
     cd ..
 )
 cd ..\..\replay-viewer\bin\neko\bin

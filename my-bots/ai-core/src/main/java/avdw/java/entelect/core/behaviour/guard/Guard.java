@@ -15,7 +15,7 @@ public class Guard extends ABehaviourTree<GameState> {
         this.expression = expression;
 
         for (Object value : values) {
-            expression.replaceFirst("\\$", value.toString());
+            this.expression = expression.replaceFirst("\\$", value.toString());
         }
     }
 
@@ -72,12 +72,15 @@ public class Guard extends ABehaviourTree<GameState> {
         }
 
         Long evaluation = -1L;
-        switch (token.substring(token.indexOf("{") + 1, token.indexOf("}") + 1)) {
+        switch (token.substring(token.indexOf("{") + 1, token.indexOf("}"))) {
             case "T":
-                evaluation = state.countBuildingsFor(player, BuildingType.TESLA_TOWER);
-                throw new UnsupportedOperationException("test count buildings for tesla tower");
+                evaluation = state.countBuildingsFor(player, BuildingType.TESLA);
+                break;
             case "E":
                 evaluation = state.getEnergyFor(player);
+                break;
+            case "A":
+                evaluation = state.countBuildingsFor(player, BuildingType.ATTACK);
                 break;
             default:
                 throw new UnsupportedOperationException(String.format("not implemented [%s]", token));

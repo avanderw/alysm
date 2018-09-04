@@ -2,7 +2,6 @@ package avdw.java.entelect.gladosai;
 
 import avdw.java.entelect.core.api.BotBehaviourTree;
 import avdw.java.entelect.core.state.State;
-import avdw.java.entelect.gladosai.BotAi;
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.Level;
 import org.pmw.tinylog.Logger;

@@ -8,5 +8,6 @@ public class GameDetails {
     public int mapHeight;
     public HashMap<BuildingType, Integer> buildingPrices;
     public int roundIncomeEnergy;
+    public IronCurtainStats ironCurtainStats;
 }
 
