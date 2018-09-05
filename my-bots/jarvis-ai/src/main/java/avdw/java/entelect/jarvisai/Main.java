@@ -25,6 +25,7 @@ public class Main {
             BotBehaviourTree ai = new BotAi(State.read(STATE_FILE_NAME));
             writeBotResponseToFile(ai.run());
         } catch (Exception e) {
+            // TODO place energy tower should there be any error
             Logger.error(e);
             writeBotResponseToFile("0,0,0");
         }
