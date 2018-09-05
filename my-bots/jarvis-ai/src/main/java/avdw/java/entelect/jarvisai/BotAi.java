@@ -51,8 +51,14 @@ public class BotAi implements BotBehaviourTree {
                 new ABehaviourTree.Sequence(
                         new DebugStatement("ATTACK"),
                         new ABehaviourTree.Selector(
+                                new Guard("A{A} <= B{A} + 2"),
+                                new Guard("A{G} <= B{G} + 6"),
+                                new Guard("B{E} < 60")
+                        ),
+                        new ABehaviourTree.Selector(
                                 new Guard("B{A} > 0"),
-                                new Guard("B{T} > 0")
+                                new Guard("B{T} > 0"),
+                                new Guard("A{G} >= $", gameState.getBuildingPrice(BuildingType.ATTACK))
                         ),
                         new Guard("A{E} >= $", gameState.getBuildingPrice(BuildingType.ATTACK)),
                         new SortedLaneSelector("A{ 2A[01], 6D[10], 5E[20] }; B{ 4A[20], 1D[01], 3E[30] }"),
