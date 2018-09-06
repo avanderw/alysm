@@ -6,7 +6,7 @@ public enum BuildingType {
     ATTACK("1"),
     ENERGY("2"),
     DECONSTRUCT("3"),
-    TESLA("4)"),
+    TESLA("4"),
     IRON_CURTAIN("5");
 
     private final String commandCode;

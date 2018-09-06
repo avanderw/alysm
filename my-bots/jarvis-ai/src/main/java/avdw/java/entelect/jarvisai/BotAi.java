@@ -40,6 +40,7 @@ public class BotAi implements BotBehaviourTree {
                         new DebugStatement("TESLA TOWER"),
                         new Guard("A{T} <= $", gameState.maxTeslaTowers()),
                         new Guard("A{E} >= $", gameState.getBuildingPrice(BuildingType.TESLA) + gameState.getTeslaFirePrice(PlayerType.A)),
+                        new SortedLaneSelector("A{ 6A[10], 4D[10], 5E[20] }; B{ 2A[30], 3D[10], 1E[30] }"),
                         new BuildTesla()
                 ),
                 new ABehaviourTree.Sequence(
@@ -51,8 +52,8 @@ public class BotAi implements BotBehaviourTree {
                 new ABehaviourTree.Sequence(
                         new DebugStatement("ATTACK"),
                         new ABehaviourTree.Selector(
-                                new Guard("A{A} <= B{A} + 2"),
-                                new Guard("A{G} <= B{G} + 6"),
+                                new Guard("A{A} <= $", gameState.countBuildingsFor(PlayerType.B, BuildingType.ATTACK) + 2),
+                                new Guard("A{G} <= $", gameState.getEnergyGenerationFor(PlayerType.B) + 6),
                                 new Guard("B{E} < 60")
                         ),
                         new ABehaviourTree.Selector(
@@ -61,7 +62,7 @@ public class BotAi implements BotBehaviourTree {
                                 new Guard("A{G} >= $", gameState.getBuildingPrice(BuildingType.ATTACK))
                         ),
                         new Guard("A{E} >= $", gameState.getBuildingPrice(BuildingType.ATTACK)),
-                        new SortedLaneSelector("A{ 2A[01], 6D[10], 5E[20] }; B{ 4A[20], 1D[01], 3E[30] }"),
+                        new SortedLaneSelector("A{ 2A[01], 6D[10], 4E[20] }; B{ 5A[30], 1D[01], 3E[30] }"),
                         new BuildAttack()
                 ),
                 new ABehaviourTree.Sequence(

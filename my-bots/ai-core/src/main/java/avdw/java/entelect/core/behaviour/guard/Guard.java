@@ -82,6 +82,9 @@ public class Guard extends ABehaviourTree<GameState> {
             case "A":
                 evaluation = state.countBuildingsFor(player, BuildingType.ATTACK);
                 break;
+            case "G":
+                evaluation = state.getEnergyGenerationFor(player);
+                break;
             default:
                 throw new UnsupportedOperationException(String.format("not implemented [%s]", token));
         }

@@ -9,7 +9,7 @@ import org.pmw.tinylog.Logger;
 public class BuildIronCurtain extends ABehaviourTree<GameState> {
     @Override
     public Status process(GameState state) {
-        if (state.getEnergyFor(PlayerType.A) < state.getBuildingPrice(BuildingType.IRON_CURTAIN)) {
+        if (state.getEnergyFor(PlayerType.A) < state.getIronCurtainPrice()) {
             Logger.debug(String.format("[FAILURE] Not enough energy to build IRON_CURTAIN"));
             return Status.Failure;
         }
