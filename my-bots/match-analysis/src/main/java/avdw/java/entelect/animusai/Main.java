@@ -7,7 +7,10 @@ import avdw.java.entelect.core.state.State;
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.Level;
 
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -26,10 +29,21 @@ public class Main {
                 .activate();
 
 
-        Path replaysDir = Paths.get("C:\\Users\\van der Westhuizen\\Documents\\GitHub\\alysm\\my-bots\\runner\\replays");
+        Path replaysDir = Paths.get("C:\\Users\\CP318674\\Documents\\alysm\\my-bots\\runner\\replays");
         Arrays.stream(replaysDir.toFile().listFiles()).forEach(replayDir -> {
+            final List<String> winnerText = new ArrayList();
+            System.out.println("processing " + replayDir);
             List<Attributes> attributesList = new ArrayList();
             Arrays.stream(replayDir.listFiles()).forEach(roundDir -> {
+                Arrays.stream(roundDir.listFiles())
+                        .filter(playerDir -> playerDir.getName().startsWith("endGameState"))
+                        .forEach(file -> {
+                            try {
+                                winnerText.addAll(Files.readAllLines(Paths.get(file.getPath())));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
                 Arrays.stream(roundDir.listFiles())
                         .filter(playerDir -> playerDir.getName().startsWith("A"))
                         .forEach(playerDir -> {
@@ -42,13 +56,63 @@ public class Main {
                                     Scanner scanner = new Scanner(stateFile);
                                     String line = scanner.nextLine();
                                     String building = null;
-                                    switch (line.substring(line.length()-1)) {
-                                        case "0": building = "Defense"; break;
-                                        case "1": building = "Attack"; break;
-                                        case "2": building = "Energy"; break;
+                                    switch (line.substring(line.length() - 1)) {
+                                        case "0":
+                                            building = "Defense";
+                                            break;
+                                        case "1":
+                                            building = "Attack";
+                                            break;
+                                        case "2":
+                                            building = "Energy";
+                                            break;
+                                        case "3":
+                                            building = "Deconstruct";
+                                            break;
+                                        case "4":
+                                            building = "Tesla";
+                                            break;
+                                        case "5":
+                                            building = "Iron Curtain";
+                                            break;
                                     }
 
-                                    attributesList.get(attributesList.size()-1).built = building;
+                                    attributesList.get(attributesList.size() - 1).aBuilt = building;
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                        });
+                Arrays.stream(roundDir.listFiles())
+                        .filter(playerDir -> playerDir.getName().startsWith("B"))
+                        .forEach(playerDir -> {
+                            Arrays.stream(playerDir.listFiles((dir, name) -> name.equals("PlayerCommand.txt"))).forEach(stateFile -> {
+                                try {
+                                    Scanner scanner = new Scanner(stateFile);
+                                    String line = scanner.nextLine();
+                                    String building = null;
+                                    switch (line.substring(line.length() - 1)) {
+                                        case "0":
+                                            building = "Defense";
+                                            break;
+                                        case "1":
+                                            building = "Attack";
+                                            break;
+                                        case "2":
+                                            building = "Energy";
+                                            break;
+                                        case "3":
+                                            building = "Deconstruct";
+                                            break;
+                                        case "4":
+                                            building = "Tesla";
+                                            break;
+                                        case "5":
+                                            building = "Iron Curtain";
+                                            break;
+                                    }
+
+                                    attributesList.get(attributesList.size() - 1).bBuilt = building;
                                 } catch (FileNotFoundException e) {
                                     e.printStackTrace();
                                 }
@@ -73,14 +137,40 @@ public class Main {
                 attributes.attackRoundDiff = attributes.playerAAttack - prevAttributes.playerAAttack;
             }
 
-            System.out.println();
-            System.out.println(replayDir.getName());
-            Integer pagingSize = 15;
-            Integer index = 0;
-            while (index < attributesList.size()) {
-                System.out.println(String.format("%10s | %10s | %10s | %10s | %10s | %10s | %10s | %10s | %10s",
-                        "Round", "Income", "ATT Diff", "NRG Diff", "ATT Delta", "NRG Delta", "A Health", "B Health", "Built"));
-                attributesList.subList(index, Math.min(index+=pagingSize,attributesList.size())).forEach(System.out::println);
+            Path path = replaysDir.resolve(replayDir.getName() + ".csv");
+            try (BufferedWriter bufferedWriter = Files.newBufferedWriter(path)) {
+                bufferedWriter.write(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
+                        "Round", "Accumulated(Energy)", "Round(Energy)", "History(Energy)", "Round(Attack)", "History(Attack)", "A(Health)", "B(Health)", "A(Built)", "B(Built)", "A(Energy Build)", "B(Energy Build)", "A(Energy)", "B(Energy)", "A(Attack)", "B(Attack)"));
+                attributesList.forEach(a -> {
+                    try {
+                        bufferedWriter.write(a.toString());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                bufferedWriter.write(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
+                        "", "", attributesList.stream().mapToInt(a -> a.playerAEnergy - a.playerBEnergy).sum(), "", attributesList.stream().mapToInt(a -> a.playerAAttack - a.playerBAttack).sum(),
+                        "", "", "",
+                        String.format("Energy(%s)",attributesList.stream().filter(a-> a.aBuilt!=null && a.aBuilt.equals("Energy")).count()),
+                        String.format("Energy(%s)",attributesList.stream().filter(a-> a.bBuilt!=null && a.bBuilt.equals("Energy")).count())));
+                bufferedWriter.write(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
+                        "", "", "", "", "", "", "", "",
+                        String.format("Attack(%s)",attributesList.stream().filter(a-> a.aBuilt!=null && a.aBuilt.equals("Attack")).count()),
+                        String.format("Attack(%s)",attributesList.stream().filter(a-> a.bBuilt!=null && a.bBuilt.equals("Attack")).count())));
+                bufferedWriter.write(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
+                        "", "", "", "", "", "", "", "",
+                        String.format("Total(%s)",attributesList.stream().filter(a-> a.aBuilt!=null).count()),
+                        String.format("Total(%s)",attributesList.stream().filter(a-> a.bBuilt!=null).count())));
+                winnerText.forEach(s -> {
+                    try {
+                        bufferedWriter.write(s + "\n");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }
@@ -100,7 +190,8 @@ class Attributes {
     final Long playerBIncome;
     Long playerATotalIncome;
     Long playerBTotalIncome;
-    String built;
+    String aBuilt;
+    String bBuilt;
     Integer energyRoundDiff;
     Integer attackRoundDiff;
 
@@ -131,7 +222,7 @@ class Attributes {
                 .sum();
         playerBHealth = state.getPlayers().stream()
                 .filter(player -> player.playerType == PlayerType.B)
-                .mapToInt(player ->  player.health)
+                .mapToInt(player -> player.health)
                 .sum();
 
         playerAAttack = state.getGameMap().stream()
@@ -165,9 +256,10 @@ class Attributes {
 
     @Override
     public String toString() {
-        return String.format("%10s | %10s | %10s | %10s | %10s | %10s | %10s | %10s | %10s",
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
                 round, playerATotalIncome - playerBTotalIncome,
-                playerAAttack - playerBAttack, playerAEnergy - playerBEnergy, attackRoundDiff,
-                energyRoundDiff, playerAHealth, playerBHealth,built);
+                playerAEnergy - playerBEnergy, energyRoundDiff, playerAAttack - playerBAttack, attackRoundDiff,
+                playerAHealth, playerBHealth, aBuilt, bBuilt, playerAEnergy, playerBEnergy, playerAStorage, playerBStorage,
+                playerAAttack, playerBAttack);
     }
 }
