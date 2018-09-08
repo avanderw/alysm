@@ -38,26 +38,29 @@ public class BotAi implements BotBehaviourTree {
                         new DebugStatement("DEFENCE"),
                         new Guard("A{E} >= $", gameState.getBuildingPrice(BuildingType.DEFENSE)),
                         new ABehaviourTree.Selector(
-                                new SortedLaneSelector("A{ 6A[00], 1D[00], 5E[30] }; B{ 3A[73], 2D[00], 4E[30] }"),
-                                new SortedLaneSelector("A{ 6A[00], 1D[11], 5E[30] }; B{ 3A[74], 2D[00], 4E[30] }")
+                                new SortedLaneSelector("A{ 6A[00], 1D[00], 5E[30] }; B{ 7T[00], 3A[73], 2D[01], 4E[30] }"),
+                                new SortedLaneSelector("A{ 6A[00], 1D[11], 5E[30] }; B{ 7T[00], 3A[74], 2D[01], 4E[30] }")
                         ),
                         new BuildDefence()
                 ),
                 new ABehaviourTree.Sequence(
                         new DebugStatement("ATTACK"),
                         new ABehaviourTree.Selector(
+                                new ABehaviourTree.AlwaysFail(new DebugStatement("Stop for IRON_CURTAIN")),
+                                new Guard("A{A} < $", gameState.countBuildingsFor(PlayerType.B, BuildingType.ATTACK) + 2),
+                                new Guard("A{G} >= 38")
+                        ),
+                        new ABehaviourTree.Selector(
                                 new ABehaviourTree.Sequence(
                                         new DebugStatement("Use ATTACK for last defence"),
+                                        new Guard("A{E} >= $", gameState.getBuildingPrice(BuildingType.ATTACK)),
+                                        new Guard("A{H} < 25"),
                                         new DefendableLaneSelector(),
                                         new BuildAttack()
                                 ),
                                 new ABehaviourTree.Sequence(
-                                        new DebugStatement("Prioritised ATTACK"),
-                                        new ABehaviourTree.Selector(
-                                                new ABehaviourTree.AlwaysFail(new DebugStatement("Stop for IRON_CURTAIN")),
-                                                new Guard("A{A} < $", gameState.countBuildingsFor(PlayerType.B, BuildingType.ATTACK) + 2),
-                                                new Guard("A{G} >= 38")
-                                        ),
+                                        new DebugStatement("Animus ATTACK"),
+                                        new Guard("A{E} >= $", gameState.getBuildingPrice(BuildingType.ATTACK)),
                                         new ABehaviourTree.Selector(
                                                 new ABehaviourTree.AlwaysFail(new DebugStatement("Start building")),
                                                 new Guard("R == 12"),
@@ -69,25 +72,19 @@ public class BotAi implements BotBehaviourTree {
                                                 new Guard(!gameState.isEnemyIronCurtainActive(), "Enemy IRON_CURTAIN is not active"),
                                                 new Guard("A{G} >= 38")
                                         ),
-                                        new Guard("A{E} >= $", gameState.getBuildingPrice(BuildingType.ATTACK)),
                                         new ABehaviourTree.Selector(
-                                                new ABehaviourTree.Sequence(
-                                                        new Guard(gameState.isIronCurtainActive(PlayerType.A), "Is IRON_CURTAIN active"),
-                                                        new SortedLaneSelector("A{ 3A[00], 6D[00], 5E[30] }; B{ 2A[30], 1D[00], 4E[30] }")
-                                                ),
-                                                new ABehaviourTree.Selector(
-                                                        new SortedLaneSelector("A{ 4A[00], 6D[10], 2E[30] }; B{ 5A[30], 1D[00], 3E[30] }"),
-                                                        new SortedLaneSelector("A{ 3A[12], 6D[10], 5E[30] }; B{ 4A[30], 1D[01], 2E[30] }")
-                                                )
+                                                new LaneSelector("A{ A = 1, D = 0, E = 2 }; B{ A = 1, D = 0, E = 2 }"),
+                                                new SortedLaneSelector("A{ 6A[00], 1D[11], 5E[20] }; B{ 7T[00], 3A[32], 2D[00], 4E[30] }"),
+                                                new SortedLaneSelector("A{ 2A[01], 6D[10], 5E[30] }; B{ 7T[00], 4A[20], 1D[01], 3E[30] }")
                                         ),
-                                        new BuildAttack()
+                                        new BuildBuilding(BuildingType.ATTACK, Direction.RIGHT)
                                 )
                         )
                 ),
                 new ABehaviourTree.Sequence(
                         new DebugStatement("ENERGY"),
                         new Guard("A{E} >= $", gameState.getBuildingPrice(BuildingType.ENERGY)),
-                        new SortedLaneSelector("A{ 5A[30], 4D[20], 6E[01] }; B{ 2A[03], 1D[03], 3E[03] }"),
+                        new SortedLaneSelector("A{ 7A[30], 4D[20], 6E[01] }; B{ 3T[02], 1A[03], 2D[02], 5E[03] }"),
                         new BuildEnergy()
                 ),
                 new DoNothing()

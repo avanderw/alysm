@@ -13,7 +13,7 @@ public class DefendableLaneSelector extends ABehaviourTree<GameState> {
     @Override
     public Status process(GameState state) {
         Set<Integer> selectedLanes = state.getGameMap().stream()
-                .filter(c -> c.x > 3 && c.x < 7)
+                .filter(c -> c.x > 3 && c.x < 6)
                 .filter(c -> !c.getMissiles().isEmpty())
                 .filter(c -> c.getMissiles().stream().anyMatch(m -> m.isPlayers(PlayerType.B)))
                 .filter(c1 -> state.getGameMap().stream()
@@ -27,7 +27,7 @@ public class DefendableLaneSelector extends ABehaviourTree<GameState> {
                         .filter(c2 -> c2.x < c1.x && c2.x > c1.x - 3)
                         .allMatch(c2 -> c2.getBuildings().isEmpty())
                 )
-                .filter(c1 -> state.getPlayers().stream().filter(p -> p.playerType == PlayerType.A).mapToInt(p -> p.health).sum() > 20
+                .filter(c1 -> state.getPlayers().stream().filter(p -> p.playerType == PlayerType.A).mapToInt(p -> p.health).sum() > 25
                         ? state.getGameMap().stream()
                         .filter(c2 -> c2.y == c1.y)
                         .filter(c2 -> c2.x < 2)

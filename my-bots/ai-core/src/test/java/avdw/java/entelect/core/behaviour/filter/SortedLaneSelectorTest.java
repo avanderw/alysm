@@ -50,7 +50,7 @@ public class SortedLaneSelectorTest {
                 new LaneSelector("A{ A = 1, D = 0, E = 0 }; B{ A = 0, D = 0, E = 0 }")
         );
 
-        ABehaviourTree<GameState> priorityTree = new SortedLaneSelector("A{ *A, *D, 3E[D3] }; B{ 2A[D2], *D, 1E[D0] }");
+        ABehaviourTree<GameState> priorityTree = new SortedLaneSelector("A{ *A, *D, 3E[D3] }; B{ 2A[D2], *D, 1E[D0], *T }");
 
         GameState state = State.read("./src/test/resources/2018070321240526.json");
         ABehaviourTree.Status treeStatus = tree.process(state);
@@ -95,7 +95,7 @@ public class SortedLaneSelectorTest {
 
     @Test
     public void testRange() {
-        ABehaviourTree<GameState> priorityTree = new SortedLaneSelector("A{ *A, *D[11], 3E[D2] }; B{ 1A[23], *D, 2E[32] }");
+        ABehaviourTree<GameState> priorityTree = new SortedLaneSelector("A{ *A, *D[11], 3E[D2] }; B{ 1A[23], *D, 2E[32], *T }");
         GameState state = State.read("./src/test/resources/start.json");
         ABehaviourTree.Status priorityTreeStatus = priorityTree.process(state);
         Integer priorityTreeLanes = state.selectedLanes.size();

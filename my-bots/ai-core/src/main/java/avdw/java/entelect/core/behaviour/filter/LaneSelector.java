@@ -53,6 +53,9 @@ public class LaneSelector extends ABehaviourTree<GameState> {
                     case "D":
                         buildingType = BuildingType.DEFENSE;
                         break;
+                    case "T":
+                        buildingType = BuildingType.TESLA;
+                        break;
                     default:
                         throw new RuntimeException(shorthand);
                 }

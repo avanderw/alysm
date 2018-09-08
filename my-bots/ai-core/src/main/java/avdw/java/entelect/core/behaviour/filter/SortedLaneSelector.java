@@ -16,6 +16,7 @@ public class SortedLaneSelector extends ABehaviourTree<GameState> {
         comparators.put("BA", Comparator.comparing(o -> o.bAttack));
         comparators.put("BD", Comparator.comparing(o -> o.bDefense));
         comparators.put("BE", Comparator.comparing(o -> o.bEnergy));
+        comparators.put("BT", Comparator.comparing(o -> o.bTesla));
     }
 
     final ABehaviourTree<GameState> laneSelectionBehaviourTree = new ABehaviourTree.Selector();
@@ -43,7 +44,7 @@ public class SortedLaneSelector extends ABehaviourTree<GameState> {
         });
 
         List<LaneParameter> list = generateLaneSelectorParameters(genSortMap.get("AA"), genSortMap.get("AD"), genSortMap.get("AE"),
-                genSortMap.get("BA"), genSortMap.get("BD"), genSortMap.get("BE"));
+                genSortMap.get("BA"), genSortMap.get("BD"), genSortMap.get("BE"), genSortMap.get("BT"));
 
         List<String> orderList = new ArrayList();
         while (!sortOrder.isEmpty()) {
@@ -78,7 +79,7 @@ public class SortedLaneSelector extends ABehaviourTree<GameState> {
     }
 
     private List<LaneParameter> generateLaneSelectorParameters(GenSort aAttack, GenSort aDefense, GenSort aEnergy,
-                                                               GenSort bAttack, GenSort bDefense, GenSort bEnergy) {
+                                                               GenSort bAttack, GenSort bDefense, GenSort bEnergy, GenSort bTesla) {
         Set<LaneParameter> set = new HashSet();
         for (int param1 = aAttack.lower; param1 <= aAttack.upper; param1++) {
             for (int param2 = aDefense.lower; param2 <= aDefense.upper; param2++) {
@@ -86,7 +87,9 @@ public class SortedLaneSelector extends ABehaviourTree<GameState> {
                     for (int param4 = bAttack.lower; param4 <= bAttack.upper; param4++) {
                         for (int param5 = bDefense.lower; param5 <= bDefense.upper; param5++) {
                             for (int param6 = bEnergy.lower; param6 <= bEnergy.upper; param6++) {
-                                    set.add(new LaneParameter(param1, param2, param3, param4, param5, param6));
+                                for (int param7 = bTesla.lower; param7 <= bTesla.upper; param7++) {
+                                    set.add(new LaneParameter(param1, param2, param3, param4, param5, param6, param7));
+                                }
                             }
                         }
                     }
@@ -107,20 +110,22 @@ class LaneParameter {
     public Integer bAttack;
     public Integer bDefense;
     public Integer bEnergy;
+    public Integer bTesla;
 
     public LaneParameter(Integer aAttack, Integer aDefense, Integer aEnergy,
-                         Integer bAttack, Integer bDefense, Integer bEnergy) {
+                         Integer bAttack, Integer bDefense, Integer bEnergy, Integer bTesla) {
         this.aAttack = aAttack;
         this.aDefense = aDefense;
         this.aEnergy = aEnergy;
         this.bAttack = bAttack;
         this.bDefense = bDefense;
         this.bEnergy = bEnergy;
+        this.bTesla = bTesla;
     }
 
     @Override
     public String toString() {
-        return String.format("A{ A = %d, D = %d, E = %d }; B{ A = %d, D = %d, E = %d }", aAttack, aDefense, aEnergy, bAttack, bDefense, bEnergy);
+        return String.format("A{ A = %d, D = %d, E = %d }; B{ T = %d, A = %d, D = %d, E = %d }", aAttack, aDefense, aEnergy, bTesla, bAttack, bDefense, bEnergy);
     }
 
     @Override
@@ -135,12 +140,13 @@ class LaneParameter {
                 this.aEnergy == that.aEnergy &&
                 this.bAttack == that.bAttack &&
                 this.bDefense == that.bDefense &&
-                this.bEnergy == that.bEnergy;
+                this.bEnergy == that.bEnergy &&
+                this.bTesla == that.bTesla;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(aAttack, aDefense, aEnergy, bAttack, bDefense, bEnergy);
+        return Objects.hash(aAttack, aDefense, aEnergy, bAttack, bDefense, bEnergy, bTesla);
     }
 }
 

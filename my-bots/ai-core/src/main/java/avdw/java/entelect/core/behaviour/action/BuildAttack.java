@@ -75,13 +75,13 @@ public class BuildAttack extends ABehaviourTree<GameState> {
                 .min(Comparator.comparingInt(c -> c.x));
 
         Optional<CellStateContainer> cell = Optional.empty();
-        if (missileCell.isPresent()) {
-            cell = buildSites.stream().filter(c -> c.x == missileCell.get().x - 3).findAny();
-        }
+            if (missileCell.isPresent()) {
+                cell = buildSites.stream().filter(c -> c.x == missileCell.get().x - 3).findAny();
+            }
 
-        if (!cell.isPresent() && attackCell.isPresent()) {
-            cell = buildSites.stream().filter(c -> c.x == attackCell.get().x - 3).findAny();
-        }
+            if (!cell.isPresent() && attackCell.isPresent()) {
+                cell = buildSites.stream().filter(c -> c.x == attackCell.get().x - 3).findAny();
+            }
 
         if (!cell.isPresent()) {
             cell = buildSites.stream().max(Comparator.comparingInt(c -> c.x));

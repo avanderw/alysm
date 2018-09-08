@@ -39,20 +39,20 @@ public class BotAi implements BotBehaviourTree {
                                         new DebugStatement("ATTACK exceptions"),
                                         new ABehaviourTree.Selector(
                                                 new LaneSelector("A{ A = 1, D = 0, E = 2 }; B{ A = 1, D = 0, E = 2 }"),
-                                                new SortedLaneSelector("A{ 6A[00], 1D[11], 5E[20] }; B{ 3A[32], 2D[00], 4E[30] }")
+                                                new SortedLaneSelector("A{ 6A[00], 1D[11], 5E[20] }; B{ 7T[00], 3A[32], 2D[00], 4E[30] }")
                                         ),
                                         new BuildBuilding(BuildingType.ATTACK, Direction.RIGHT)
                                 ),
                                 new ABehaviourTree.Sequence(// cooldown on construction check ATTACK place
                                         new DebugStatement("DEFENSE strategy"),
                                         new ABehaviourTree.Selector(
-                                                new SortedLaneSelector("A{ 6A[00], 1D[00], 5E[20] }; B{ 3A[43], 2D[00], 4E[30] }")
+                                                new SortedLaneSelector("A{ 6A[00], 1D[00], 5E[20] }; B{ 7T[00], 3A[43], 2D[00], 4E[30] }")
                                         ),
                                         new BuildBuilding(BuildingType.DEFENSE, Direction.RIGHT)
                                 ),
-                                new ABehaviourTree.Sequence(// "A{ A = 1, D = 0, E = 2 }; B{ A = 1, D = 0, E = 2 }" (cooldown check [lowest cooldown wins])
+                                new ABehaviourTree.Sequence(// "A{ A = 1, D = 0, E = 2 }; B{ 7T[00],A = 1, D = 0, E = 2 }" (cooldown check [lowest cooldown wins])
                                         new DebugStatement("ATTACK strategy"),
-                                        new SortedLaneSelector("A{ 2A[01], 6D[10], 5E[30] }; B{ 4A[20], 1D[01], 3E[30] }"),
+                                        new SortedLaneSelector("A{ 2A[01], 6D[10], 5E[30] }; B{ 7T[00], 4A[20], 1D[01], 3E[30] }"),
                                         new BuildBuilding(BuildingType.ATTACK, Direction.RIGHT)
                                 )
                         )
@@ -64,12 +64,12 @@ public class BotAi implements BotBehaviourTree {
                                 gameState.getBuildingPrice(BuildingType.ATTACK)
                         ),
                         new DebugStatement("ENERGY strategy"),
-                        new SortedLaneSelector("A{ 6A[20], 3D[10], 5E[01] }; B{ 1A[01], 2D[01], 4E[03] }"),
+                        new SortedLaneSelector("A{ 6A[20], 3D[10], 5E[01] }; B{ 7T[00], 1A[01], 2D[01], 4E[03] }"),
                         new BuildBuilding(BuildingType.ENERGY, Direction.LEFT)
                 ),
                 new ABehaviourTree.Sequence(
                         new DebugStatement("ATTACK first fallback"),
-                        new SortedLaneSelector("A{ 2A[02], 6D[00], 5E[30] }; B{ 4A[20], 1D[01], 3E[30] }"),
+                        new SortedLaneSelector("A{ 2A[02], 6D[00], 5E[30] }; B{ 7T[00], 4A[20], 1D[01], 3E[30] }"),
                         new BuildBuilding(BuildingType.ATTACK, Direction.RIGHT)
                 ),
                 new DoNothing()

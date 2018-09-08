@@ -87,6 +87,9 @@ public class Guard extends ABehaviourTree<GameState> {
             case "G":
                 evaluation = state.getEnergyGenerationFor(player);
                 break;
+            case "H":
+                evaluation = state.getPlayers().stream().filter(p->p.playerType == player).mapToLong(p->p.health).sum();
+                break;
             default:
                 throw new UnsupportedOperationException(String.format("not implemented [%s]", token));
         }
