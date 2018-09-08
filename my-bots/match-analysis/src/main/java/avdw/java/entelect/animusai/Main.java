@@ -29,7 +29,7 @@ public class Main {
                 .activate();
 
 
-        Path replaysDir = Paths.get("C:\\Users\\CP318674\\Documents\\alysm\\my-bots\\runner\\replays");
+        Path replaysDir = Paths.get("C:\\Users\\van der Westhuizen\\Documents\\GitHub\\alysm\\my-bots\\runner\\replays");
         Arrays.stream(replaysDir.toFile().listFiles()).forEach(replayDir -> {
             final List<String> winnerText = new ArrayList();
             System.out.println("processing " + replayDir);

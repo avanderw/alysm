@@ -66,13 +66,13 @@ public class GameState {
     public Boolean isIronCurtainActive(PlayerType playerType) {
         return getPlayers().stream()
                 .filter(p -> p.playerType == playerType)
-                .map(p->p.isIronCurtainActive).findAny().get();
+                .map(p -> p.isIronCurtainActive).findAny().get();
     }
 
     public Boolean isIronCurtainAvailable(PlayerType playerType) {
         return getPlayers().stream()
-                .filter(p-> p.playerType == playerType)
-                .map(p->p.ironCurtainAvailable).findAny().get();
+                .filter(p -> p.playerType == playerType)
+                .map(p -> p.ironCurtainAvailable).findAny().get();
     }
 
     public Integer maxTeslaTowers() {
@@ -85,5 +85,9 @@ public class GameState {
 
     public Integer getIronCurtainPrice() {
         return gameDetails.ironCurtainStats.price;
+    }
+
+    public Boolean isEnemyIronCurtainActive() {
+        return Arrays.stream(players).filter(p->p.playerType == PlayerType.B).anyMatch(p->p.isIronCurtainActive);
     }
 }

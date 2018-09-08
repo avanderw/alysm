@@ -86,7 +86,7 @@ public class SortedLaneSelector extends ABehaviourTree<GameState> {
                     for (int param4 = bAttack.lower; param4 <= bAttack.upper; param4++) {
                         for (int param5 = bDefense.lower; param5 <= bDefense.upper; param5++) {
                             for (int param6 = bEnergy.lower; param6 <= bEnergy.upper; param6++) {
-                                set.add(new LaneParameter(param1, param2, param3, param4, param5, param6));
+                                    set.add(new LaneParameter(param1, param2, param3, param4, param5, param6));
                             }
                         }
                     }

@@ -28,7 +28,7 @@ public class LaneSelectorTest {
                 new LaneFilter(PlayerType.A, BuildingType.ENERGY, Operation.GREATER_THAN, 0),
                 new LaneFilter(PlayerType.A, BuildingType.ATTACK, Operation.EQUALS, 0)
         );
-        LaneSelector shorthandConstructor = new LaneSelector("A{E > 0,A = 0}");
+        LaneSelector shorthandConstructor = new LaneSelector("A{ E > 0, A = 0 }");
 
         GameState state = State.read("./src/test/resources/2018070321240526.json");
         ABehaviourTree.Status originalStatus = originalConstructor.process(state);

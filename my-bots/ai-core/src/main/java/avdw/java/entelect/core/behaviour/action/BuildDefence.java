@@ -30,7 +30,7 @@ public class BuildDefence extends ABehaviourTree<GameState> {
                 .filter(c -> c.cellOwner == PlayerType.A)
                 .filter(c -> c.y == lane)
                 .filter(c -> c.getBuildings().isEmpty())
-                .max(Comparator.comparingInt(c -> c.x));
+                .min(Comparator.comparingInt(c -> c.x));
 
         if (cell.isPresent()) {
             state.command = String.format("%s,%s,%s", cell.get().x, cell.get().y, BuildingType.DEFENSE.getCommandCode());

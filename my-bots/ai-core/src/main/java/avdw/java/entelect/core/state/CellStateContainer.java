@@ -21,4 +21,5 @@ public class CellStateContainer {
     public List<Building> getBuildings(){
         return this.buildings;
     }
+    public List<Missile> getMissiles() {return this.missiles;}
 }

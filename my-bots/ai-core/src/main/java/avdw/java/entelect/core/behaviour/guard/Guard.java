@@ -67,11 +67,13 @@ public class Guard extends ABehaviourTree<GameState> {
             player = PlayerType.A;
         } else if (token.startsWith("B")) {
             player = PlayerType.B;
+        }else if (token.startsWith("R")) {
+            return Integer.toUnsignedLong(state.gameDetails.round);
         } else {
             return Long.parseLong(token);
         }
 
-        Long evaluation = -1L;
+        Long evaluation;
         switch (token.substring(token.indexOf("{") + 1, token.indexOf("}"))) {
             case "T":
                 evaluation = state.countBuildingsFor(player, BuildingType.TESLA);
